@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "pinky": {
+      "command": "/Volumes/Datos/Projects/pi/pi-py/.venv/bin/pinky",
+      "args": ["mcp"],
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      }
+    }
+  }
+}
