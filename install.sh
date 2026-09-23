@@ -46,7 +46,9 @@ else
         git -C "$SRC_CACHE_DIR" reset --hard --quiet origin/develop 2>/dev/null || git -C "$SRC_CACHE_DIR" reset --hard --quiet origin/main
     else
         rm -rf "$SRC_CACHE_DIR"
-        git clone --quiet https://github.com/AdelysAlberto/pinky-orchestrator.git "$SRC_CACHE_DIR" 2>/dev/null || cp -r "$(pwd)" "$SRC_CACHE_DIR"
+        git clone --quiet https://github.com/AdelysAlberto/pinky-smart-orchestrator.git "$SRC_CACHE_DIR" 2>/dev/null || \
+        git clone --quiet git@github.com:AdelysAlberto/pinky-smart-orchestrator.git "$SRC_CACHE_DIR" 2>/dev/null || \
+        cp -r "$(pwd)" "$SRC_CACHE_DIR"
     fi
     REPO_DIR="$SRC_CACHE_DIR"
 fi
