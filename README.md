@@ -1,145 +1,201 @@
 <h1 align="center">Pinky Smart Orchestrator</h1>
 
 <p align="center">
-  <b>Harness-Agnostic, Zero-Docker Multi-Agent Execution Engine</b><br>
-  <i>Concurrent FIFO task coordination, instant Git worktree sandboxes, local System 1 routing via Laya-API, and native MCP protocol support.</i>
+  <b>Universal Multi-Agent Orchestration & Standardization Framework</b><br>
+  <i>Empower your AI coding assistants with specialized roles, domain rules, modular skills, and deterministic verification across all major agentic harnesses.</i>
 </p>
 
 <p align="center">
-  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.11%2B-blue.svg?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.11+"></a>
-  <a href="https://fastapi.tiangolo.com/"><img src="https://img.shields.io/badge/FastAPI-0.115%2B-009688.svg?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI"></a>
-  <a href="https://modelcontextprotocol.io/"><img src="https://img.shields.io/badge/MCP-2.2-purple.svg?style=for-the-badge" alt="MCP"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge" alt="License"></a>
+  <img src="https://img.shields.io/badge/Version-1.0.5-blue.svg?style=for-the-badge" alt="Version">
+  <img src="https://img.shields.io/badge/Platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey.svg?style=for-the-badge" alt="Platform">
+  <img src="https://img.shields.io/badge/Runtime-Node.js%20%7C%20Bun-orange.svg?style=for-the-badge" alt="Runtime">
+  <img src="https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge" alt="License">
 </p>
 
 ---
 
 ## Overview
 
-**Pinky Smart Orchestrator** is an autonomous multi-agent task runner and supervisor designed to coordinate specialized AI coding specialists (`sheldon`, `homero`, `edna`, `tio-bob`).
+**Pinky Smart Orchestrator** is a universal framework designed to standardize, orchestrate, and elevate the performance of autonomous coding assistants. It bridges the gap between raw LLM capabilities and rigorous software engineering standards by providing domain-isolated agents, universal engineering rules, and modular skill bundles.
 
-Instead of running subagents within a single bloated process or relying on heavy virtualization containers (Docker/LXC), Pinky provisions **ephemeral Git worktrees** in under 50 ms. It evaluates tasks in 30 ms using local neural weights (**Laya-API**) at zero token cost, streams unbuffered ANSI terminal output via PTY over WebSockets, and exposes a native **Model Context Protocol (MCP)** interface for Cursor, VS Code, Pi, OpenCode, and Claude.
+Rather than relying on single monolithic prompts, Pinky enforces strict separation of concerns across Architecture, Implementation, UX/UI Design, Security Auditing, Code Review, Tax/Financial Strategy, and Regulatory Compliance. Each role operates within strict boundaries, ensuring zero false positives and verifiable terminal deliverables.
 
 ---
 
 ## What It Solves
 
-- **Zero-Virtualization Overhead**: Eliminates Docker daemon dependency, container boot latencies (5–15s), and cross-platform native binary conflicts in `node_modules` (macOS vs Linux).
-- **Branch Protection**: All agent executions occur inside isolated Git worktrees (`.pinky/worktrees/<task-id>`). The active `develop` branch remains completely untouched until verification passes.
-- **Extreme Token Efficiency**: Uses local Laya-API classification to bypass architectural overhead for routine bugfixes (`scope: single`), saving up to 75% of API tokens.
-- **Harness Portability**: Decouples prompts and agent workflows from any single runtime. Operates identically across Pi, OpenCode, and Claude Code.
-- **Concurrent Dual Control**: Solves human-in-the-loop approval gates simultaneously across interactive terminal CLI prompts and a real-time dark-mode Web Dashboard.
+- **Context Pollution & Drift**: Eliminates oversized prompts by lazy-loading domain rules and modular skills on demand.
+- **Architectural Deviation**: Prevents implementation agents from making unauthorized system design decisions without explicit technical blueprints.
+- **Inconsistent Quality Gates**: Establishes deterministic verification before marking any task as complete (`bun test`, `biome check`, `typecheck`).
+- **Multi-Tool Fragmentation**: Single unified bundle that installs and synchronizes configurations seamlessly across Pi, Claude Code, Cursor, Codex, OpenCode, VS Code Copilot, and Google Antigravity.
 
 ---
 
 ## Key Features
 
-- **Zero-Docker Sandboxes**: Ephemeral workspaces created with `git worktree add` and destroyed cleanly upon merge.
-- **Local System 1 Routing (Laya-API)**: Evaluates `scope` (`single` vs `plan_and_build`), `domain` (`code`, `ux`, `review`, `security`), and `effort` (`low` vs `high`) in ~30 ms locally on Apple Silicon (MPS) without consuming LLM tokens.
-- **Harness-Agnostic Adapters**: Native connectors for Pi (`pi -p`), OpenCode (`opencode run`), and Claude Code (`claude -p`).
-- **Live PTY Telemetry Stream**: Pseudo-terminal process capture preserving ANSI color codes and interactive progress over WebSockets.
-- **Persistent SQLite FIFO Queue**: Durable task pipeline tracking with pause and resume controls.
-- **Cogni Memory Bridge**: Pre-flight semantic memory ingestion and post-flight structured signature persistence.
-- **Universal MCP Auto-Installer (`pinky init`)**: Automatically detects and injects MCP server configurations across 11+ installed IDEs and agent harnesses without overwriting existing settings.
+- **Interactive Scrollable CLI**: Terminal UI supporting arrow-key navigation (`↑`/`↓`), real-time search filtering, and single/multi-harness installation.
+- **Cross-Platform Native Support**: Automated setup and persistent `$PATH` configuration for macOS, Linux, WSL, and native Windows (PowerShell/CMD).
+- **Zero-Dependency Runtime**: Built with native ESM modules requiring no prior `npm install` steps.
+- **7 Specialized Agent Roles**: Clear division of responsabilidades between strategic planning, construction, visual craft, security, and quality gates.
+- **27 Modular Agent Skills**: Standardized `SKILL.md` packages covering databases, modern frontend, mobile native, styling, testing, and legal compliance.
+- **Semantic Release Automation**: Built-in script (`release.sh`) for automated `patch`, `minor`, and `major` tag releases and GitHub publishing.
 
 ---
 
-## Quick Start
+## Supported Harnesses
 
-### Automated Installation (One-Line Setup)
+| Harness | Platform / Environment | Target Directory | Primary Config File |
+| :--- | :--- | :--- | :--- |
+| **Pi** | Pi Coding Agent (`pi-open-agents`) | `~/.pi/agent/` | `AGENTS.md`, `settings.json` |
+| **Claude Code** | Anthropic Claude Code CLI | `~/.claude/` | `CLAUDE.md`, `settings.json` |
+| **Cursor** | Cursor IDE & Composer | `~/.cursor/` | `AGENTS.md` |
+| **OpenAI Codex** | OpenAI Codex CLI / Environment | `~/.codex/` | `AGENTS.md`, `config.toml` |
+| **OpenCode** | OpenCode Autonomous Agent | `~/.config/opencode/` | `AGENTS.md`, `opencode.json` |
+| **VS Code Copilot** | GitHub Copilot Custom Agents | `~/.copilot/` | `copilot-instructions.md` |
+| **Google Antigravity** | Antigravity IDE & Antigravity 2.0 | `~/.gemini/config/` | `GEMINI.md`, `AGENTS.md` |
 
-Install and auto-configure Pinky and all your installed harnesses (Cursor, VS Code, Pi, OpenCode, Claude, etc.) in one command:
+---
+
+## Quick Start & Installation
+
+### macOS, Linux & WSL (Bash / Zsh)
+
+Run the following one-line installer in your terminal:
 
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/AdelysAlberto/pinky-smart-orchestrator/main/install.sh)
 ```
 
-### Manual Installation (From Source)
+### Windows (PowerShell)
 
-```bash
-# 1. Run local installer script
-./install.sh
+Run the following command in PowerShell:
 
-# Or install manually via pip:
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -e .
-pinky init
+```powershell
+irm https://raw.githubusercontent.com/AdelysAlberto/pinky-smart-orchestrator/main/install.ps1 | iex
 ```
+
+The installer automatically deploys the global executable `pinky` to `~/.local/bin/pinky` (Unix) or `pinky.cmd` / `pinky.ps1` (Windows) and ensures it is accessible from your system `$PATH`.
 
 ---
 
-## Usage Reference
+## CLI Command Reference
 
-### Starting the Orchestrator Service & Web Dashboard
+Once installed, the `pinky` command is globally available in any terminal session:
 
-```bash
-pinky start
-```
-The real-time Web Dashboard will be available at `http://127.0.0.1:8765`.
+| Command | Description | Example |
+| :--- | :--- | :--- |
+| `pinky` | Launches the interactive terminal menu to select and install harnesses. | `pinky` |
+| `pinky install <harness>` | Directly installs the bundle into a specific harness (`pi`, `claude`, `cursor`, `codex`, `opencode`, `copilot`, `antigravity`, `all`). | `pinky install pi` |
+| `pinky pi-addons` | Instala los paquetes y extensiones recomendadas para Pi (`pi-open-agents`, `pi-mcp-adapter`, `pi-memory`, etc.). | `pinky pi-addons` |
+| `pinky upgrade` | Pulls the latest Pinky Core updates from GitHub and synchronizes all active harnesses. | `pinky upgrade` |
+| `pinky status` | Displays all configured harnesses and their target filesystem paths. | `pinky status` |
+| `pinky version` | Outputs current installed version, git commit hash, and core directory. | `pinky version` |
+| `pinky help` | Prints the complete usage guide and command reference. | `pinky help` |
 
-### Executing Tasks Directly from CLI
+### Interactive Menu Navigation
 
-```bash
-# Run with default harness (Pi)
-pinky run "Refactor authentication service to Result pattern"
-
-# Run with OpenCode harness
-pinky run "Fix typing errors in models.py" --harness opencode
-
-# Run with Claude Code harness
-pinky run "Create unit tests for webhook handlers" --harness claude
-```
-
-### Inspecting Queue & Status
-
-```bash
-pinky list
-```
+- **Arrow Keys (`↑` / `↓`)**: Navigate through the list of harnesses.
+- **Enter**: Confirm selection and proceed with installation.
+- **Typing text**: Instant search and filtering.
+- **Numbers (`1-8`)**: Direct selection by index.
+- **Ctrl+C**: Cancel operation safely.
 
 ---
 
-### Lifecycle Management (Updates & Uninstall)
+## Specialized Agents Lineup
 
-```bash
-# Check current version and upgrade to latest GitHub release
-pinky update
-
-# Show current installed version
-pinky version
-
-# Uninstall Pinky and clean MCP configurations across all harnesses
-pinky uninstall
-
-# Complete purge (removes ~/.pinky data directory and virtualenv)
-pinky uninstall --purge
-```
+| Agent | Role | Responsibility | Mode |
+| :--- | :--- | :--- | :--- |
+| `@sheldon` | Chief Architect & Orchestrator | System design, SDD specifications, DDL data schemas, API contracts, root-cause investigation, and execution plans (`plan/<TAG>.md`). | Read-only |
+| `@homero` | Tactical Builder & Craftsman | Implementation of application code, component construction, bug fixes, refactors, and test suites. | Read-Write |
+| `@edna` | Lead UX/UI Designer | Interaction flows, design tokens, visual architecture, mobile ergonomics, and CSS design systems (`artifacts/ux/`). | Read-Write |
+| `@gorgory` | Security & Code Hygiene Auditor | OWASP vulnerability scans, orphan endpoint discovery, secret exposure audits, and dead code mitigation (`artifacts/security/`). | Read-only |
+| `@tio-bob` | Senior Code Reviewer | Clean Code quality gates, architectural invariant verification, PR/MR inspection, and merge safety validation. | Read-only |
+| `@contador` | Tax & Financial Strategist | Tax structuring, IRPF, VAT/IVA, corporate taxes, and cross-border financial rules for Spain and the European Union. | Read-only |
+| `@saul` | Senior Legal & Compliance Counsel | Regulatory compliance, GDPR/RGPD, EU AI Act, LSSI-CE, Terms of Service, licensing, and intellectual property. | Read-only |
 
 ---
 
-## MCP Integration
+## Universal Engineering Invariants
 
-Pinky includes a native Model Context Protocol (MCP) server over `stdio`. Run `pinky init` in your project to automatically configure your active IDEs and agent harnesses.
+All harnesses configured by Pinky strictly adhere to the following technical standards:
 
-### Manual Configuration (`.cursor/mcp.json` / VS Code / Claude Desktop)
+1. **Pure Functional Paradigm**: Avoid classes, inheritance hierarchies, and shared mutable state where pure functions and modular composition suffice.
+2. **Result Pattern**: Service boundaries and network handlers return discriminated union types (`{ success: true, data } | { success: false, error }`) instead of throwing uncaught exceptions.
+3. **File Length Discipline**: Strict maximum of 250 lines of code per file. Break complex modules down into cohesive subcomponents and utilities.
+4. **Vertical Slicing**: Codebases organized by feature domains (`src/modules/<FeatureName>/`) rather than technical layers.
+5. **Anti-AI Footprint**: Prohibition of generic decorative emojis in source code, technical reports, commit messages, and documentation.
+6. **Zero False Positives**: Every task completion must be backed by empirical terminal execution evidence (`bun test`, `biome check`, `typecheck`).
 
-```json
-{
-  "mcpServers": {
-    "pinky": {
-      "command": "pinky",
-      "args": ["mcp"]
-    }
-  }
-}
+---
+
+## Modular Skills Catalog
+
+The bundle includes 27 modular agent skills compliant with the **Agent Skills** specification (`SKILL.md`):
+
+### Architecture & Backend
+- `backend-architecture`: Vertical slicing, Result Pattern, structured logging, and HTTP standards.
+- `database-design`: PostgreSQL schemas, Drizzle ORM, migrations, indexing, and Redis caching.
+- `doc-database`: Query optimization, execution plans, and transaction boundaries.
+- `security-hardening`: OWASP Top 10 mitigation, rate limiting, and defensive input sanitization.
+
+### Frontend & Mobile
+- `react-typescript-clean-code`: Clean Architecture, pure components, and custom hooks for React 18/19+.
+- `react-native-architecture`: Expo Router, Fabric/TurboModules, Reanimated 3, and Callstack optimization.
+- `mobile-native`: iOS HIG, Material Design 3, safe areas, touch targets, and gesture ergonomics.
+- `css-architecture`: CSS Modules, BEM methodology, design token hierarchies, and GPU transitions.
+- `zustand`: State management with atomic selectors (`useShallow`) and render loop prevention.
+- `frontend-design`: Distinctive visual systems, typography pairings, and modern palette design.
+- `i18n-localization`: React-i18next setup, namespaced translations, and RTL logical properties.
+
+### Design & UX
+- `ux-decision`: Systematic UX reasoning, premise interrogation, and state completeness sweeps.
+- `ux-wireframing`: Wireframe specifications, user flows, and visual token structures.
+- `visual-craft`: Optical alignment, concentric corner radii, and shadow elevation models.
+- `impeccable`: Frontend polish, refinement, interaction hardening, and aesthetic elevation.
+- `accessibility`: WCAG 2.2 AA / Section 508 compliance, focus trapping, and screen reader semantics.
+
+### Quality, Auditing & Testing
+- `auditor`: Codebase health inspection, technical debt analysis, and architecture discovery.
+- `gadget-auditor`: Dead code elimination, orphan route detection, and semantic drift auditing.
+- `testing-strategy`: Unit tests, integration tests with MSW, and coverage diagnostics.
+- `house-testing`: Diagnostic test harness setup and edge-case validation.
+- `tio-bob`: PR/MR review protocol, clean code metrics, and pull request quality gates.
+
+### Product, Business & Strategy
+- `product-requirements`: Product Requirements Documents (PRDs), briefs, and MoSCoW scoping.
+- `market-research`: Competitor analysis, feature parity benchmarks, and positioning matrices.
+- `growth-copywriting`: Conversion copywriting frameworks (AIDA, PAS, BAB, FAB).
+- `tax-accounting`: Tax calculations (IRPF, RETA, IS, VAT) for freelancers and corporations in Spain/EU.
+- `legal-compliance`: European legal compliance, GDPR, EU AI Act, and software licensing.
+- `scrum-planning`: Agile task breakdown, story point estimation, and dependency graphs.
+- `linkedin`: Technical thought leadership and architecture storytelling.
+- `graphify`: Persistent knowledge graphs from codebases and documentation.
+- `cogni`: Autonomous semantic memory and token-efficient signature storage.
+
+---
+
+## Release Automation
+
+For repository maintainers, automated semantic releases are managed via [`release.sh`](file:///Volumes/Datos/Projects/pi/pi-orchestrator-py/release.sh):
+
+```bash
+# Interactive mode (queries latest Git tag and prompts for bump type)
+./release.sh
+
+# Direct CLI bump
+./release.sh patch   # Increments PATCH (e.g. v1.0.5 -> v1.0.6)
+./release.sh minor   # Increments MINOR (e.g. v1.0.5 -> v1.1.0)
+./release.sh major   # Increments MAJOR (e.g. v1.0.5 -> v2.0.0)
 ```
 
-### Available MCP Tools
-
-- **`orchestrate_task(prompt, harness)`**: Dispatches the task through the Pinky pipeline inside an isolated worktree.
-- **`approve_task(task_id, approved)`**: Approves or rejects a pending architectural plan directly from the chat interface.
-- **`get_task_status(task_id)`**: Returns detailed progress, active specialist step, and plan content.
-- **`list_tasks()`**: Lists all active, queued, and completed tasks.
+The script performs the following tasks:
+1. Queries the latest Git tag from local and remote references.
+2. Updates the `VERSION` constant in `bin/pinky`.
+3. Creates a Conventional Commit (`chore(release): vX.Y.Z`).
+4. Creates an annotated Git tag.
+5. Pushes the branch and tag to the remote repository.
+6. Generates a GitHub Release via `gh` CLI if installed and authenticated.
 
 ---
 
@@ -147,68 +203,38 @@ Pinky includes a native Model Context Protocol (MCP) server over `stdio`. Run `p
 
 ```text
 pinky-smart-orchestrator/
-├── orchestrator/
-│   ├── config.py           # Central configuration and effort model maps
-│   ├── models.py           # Pydantic schemas for tasks, steps, and telemetry
-│   ├── queue_engine.py     # SQLite FIFO queue coordinator
-│   ├── worktree_manager.py # Ephemeral Git worktree lifecycle manager
-│   ├── agent_runner.py     # PTY-based unbuffered ANSI streaming runner
-│   ├── decision_hub.py     # Multiplexed CLI/Web human-in-the-loop resolver
-│   ├── cogni_bridge.py     # Cogni semantic memory pre-flight and persistence
-│   ├── router_bridge.py    # Local Laya-API classification client
-│   ├── installer.py        # Multi-harness detector and safe MCP config merger
-│   ├── updater.py          # GitHub release version checker and auto-updater
-│   ├── uninstaller.py      # MCP harness cleaner and binary unlinker
-│   ├── mcp_server.py       # Official Model Context Protocol (MCP) server
-│   ├── server.py           # FastAPI backend and WebSocket broadcaster
-│   ├── cli.py              # CLI launcher (run, start, list, mcp, init, update, uninstall)
-│   ├── harnesses/          # Pluggable CLI adapters (Pi, OpenCode, Claude)
-│   │   ├── base.py
-│   │   ├── pi_adapter.py
-│   │   ├── opencode_adapter.py
-│   │   ├── claude_adapter.py
-│   │   └── factory.py
-│   └── static/             # Real-time Web Dashboard (Split View)
-│       ├── index.html
-│       ├── app.js
-│       └── styles.css
-├── agents/                 # Embedded specialist definitions (Sheldon, Homero, Edna, Tio Bob)
-├── rules/                  # System rules and engineering invariants
-├── skills/                 # Specialized domain skill cheat-sheets
-├── tests/                  # Deterministic test suite (15 tests)
-├── install.sh              # Automated one-line installer script
-├── release.sh              # Semantic versioning and GitHub release tool
-├── uninstall.sh            # Complete uninstallation script
-├── pyproject.toml          # Package configuration and console entrypoints
-├── requirements.txt        # Minimal Python dependencies
-└── LICENSE                 # MIT License
+├── install.sh                  # Universal Unix bootstrap installer (macOS/Linux/WSL)
+├── install.ps1                 # Native Windows PowerShell installer
+├── release.sh                  # Automated semantic release script
+├── bin/
+│   ├── pinky                   # Global Pinky CLI core executable (Node/Bun ESM)
+│   ├── pinky.cmd               # Windows Command Prompt batch wrapper
+│   └── pinky.ps1               # Windows PowerShell execution wrapper
+├── scripts/
+│   └── installer.mjs           # Interactive harness selection CLI engine
+├── agents-pi/                  # Bundle for Pi Coding Agent (pi-open-agents)
+├── agents-claude/              # Bundle for Anthropic Claude Code
+├── agents-cursor/              # Bundle for Cursor IDE & Composer
+├── agents-codex/               # Bundle for OpenAI Codex
+├── agents-opencode/            # Bundle for OpenCode CLI
+├── agents-copilot/             # Bundle for VS Code GitHub Copilot
+├── agents-antigravity/         # Bundle for Google Antigravity IDE & 2.0
+├── main/                       # Master templates for agents, rules, and skills
+└── README.md                   # Project documentation and specifications
 ```
-
----
-
-## Verification & Testing
-
-The repository includes a comprehensive deterministic unit test suite:
-
-```bash
-.venv/bin/pytest -v
-```
-
-All 15 tests validate harness factory resolution, queue persistence, PTY execution, router fallbacks, safe MCP configuration merging, lifecycle management, and Git worktree lifecycles.
 
 ---
 
 ## Author & Maintenance
 
-Maintained and designed by:
-
-- **Adelys Alberto Belen** ([@AdelysAlberto](https://github.com/AdelysAlberto))
-- Software Engineer & System Architect
-- Website: [adalbeca.com](https://adalbeca.com)
-- Contact: `dev@adalbeca.com`
+**Adelys Alberto Belen**  
+Software Engineer & Technical Architect  
+- **GitHub**: [@AdelysAlberto](https://github.com/AdelysAlberto)  
+- **Website**: [adalbeca.com](https://adalbeca.com)  
+- **Email**: [dev@adalbeca.com](mailto:dev@adalbeca.com)  
 
 ---
 
 ## License
 
-This project is licensed under the terms of the [MIT License](LICENSE).
+This project is licensed under the [MIT License](LICENSE).
