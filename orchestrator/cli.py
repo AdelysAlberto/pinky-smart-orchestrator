@@ -28,6 +28,10 @@ def main():
     # Command: mcp
     subparsers.add_parser("mcp", help="Run the MCP Server over stdio for Cursor, VS Code, and Pi")
 
+    # Command: init
+    init_parser = subparsers.add_parser("init", help="Scan installed harnesses and inject Pinky MCP configuration and rules")
+    init_parser.add_argument("--project", type=str, default=None, help="Project directory path")
+
     # Command: update
     subparsers.add_parser("update", help="Check for and install latest updates from GitHub")
 

@@ -8,3 +8,4 @@ When asked to perform architecture design, refactorings, multi-agent builds, or 
 - Use `approve_task(task_id="...")` to confirm pending architecture blueprints.
 - Do NOT run multi-file edits directly when Pinky is available to orchestrate them safely.
 <!-- pinky:mcp:end -->
+
