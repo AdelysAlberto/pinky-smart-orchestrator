@@ -99,6 +99,24 @@ pinky list
 
 ---
 
+### Lifecycle Management (Updates & Uninstall)
+
+```bash
+# Check current version and upgrade to latest GitHub release
+pinky update
+
+# Show current installed version
+pinky version
+
+# Uninstall Pinky and clean MCP configurations across all harnesses
+pinky uninstall
+
+# Complete purge (removes ~/.pinky data directory and virtualenv)
+pinky uninstall --purge
+```
+
+---
+
 ## MCP Integration
 
 Pinky includes a native Model Context Protocol (MCP) server over `stdio`. Run `pinky init` in your project to automatically configure your active IDEs and agent harnesses.
@@ -139,9 +157,11 @@ pinky-smart-orchestrator/
 │   ├── cogni_bridge.py     # Cogni semantic memory pre-flight and persistence
 │   ├── router_bridge.py    # Local Laya-API classification client
 │   ├── installer.py        # Multi-harness detector and safe MCP config merger
+│   ├── updater.py          # GitHub release version checker and auto-updater
+│   ├── uninstaller.py      # MCP harness cleaner and binary unlinker
 │   ├── mcp_server.py       # Official Model Context Protocol (MCP) server
 │   ├── server.py           # FastAPI backend and WebSocket broadcaster
-│   ├── cli.py              # CLI launcher (pinky run, start, list, mcp, init)
+│   ├── cli.py              # CLI launcher (run, start, list, mcp, init, update, uninstall)
 │   ├── harnesses/          # Pluggable CLI adapters (Pi, OpenCode, Claude)
 │   │   ├── base.py
 │   │   ├── pi_adapter.py
@@ -155,8 +175,10 @@ pinky-smart-orchestrator/
 ├── agents/                 # Embedded specialist definitions (Sheldon, Homero, Edna, Tio Bob)
 ├── rules/                  # System rules and engineering invariants
 ├── skills/                 # Specialized domain skill cheat-sheets
-├── tests/                  # Deterministic test suite (13 tests)
+├── tests/                  # Deterministic test suite (15 tests)
 ├── install.sh              # Automated one-line installer script
+├── release.sh              # Semantic versioning and GitHub release tool
+├── uninstall.sh            # Complete uninstallation script
 ├── pyproject.toml          # Package configuration and console entrypoints
 ├── requirements.txt        # Minimal Python dependencies
 └── LICENSE                 # MIT License
@@ -172,7 +194,7 @@ The repository includes a comprehensive deterministic unit test suite:
 .venv/bin/pytest -v
 ```
 
-All 13 tests validate harness factory resolution, queue persistence, PTY execution, router fallbacks, safe MCP configuration merging, and Git worktree lifecycles.
+All 15 tests validate harness factory resolution, queue persistence, PTY execution, router fallbacks, safe MCP configuration merging, lifecycle management, and Git worktree lifecycles.
 
 ---
 
