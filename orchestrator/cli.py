@@ -28,13 +28,52 @@ def main():
     # Command: mcp
     subparsers.add_parser("mcp", help="Run the MCP Server over stdio for Cursor, VS Code, and Pi")
 
-    # Command: init
-    init_parser = subparsers.add_parser("init", help="Scan and configure MCP integration across all installed harnesses")
-    init_parser.add_argument("--project", type=str, default=None, help="Target project directory (defaults to current dir)")
+    # Command: update
+    subparsers.add_parser("update", help="Check for and install latest updates from GitHub")
+
+    # Command: uninstall
+    uninstall_parser = subparsers.add_parser("uninstall", help="Uninstall Pinky binary and clean MCP configurations")
+    uninstall_parser.add_argument("--purge", action="store_true", help="Also remove data in ~/.pinky")
+
+    # Command: version
+    subparsers.add_parser("version", help="Show current version")
 
     args = parser.parse_args()
 
-    if args.command == "init":
+    if args.command == "version":
+        from orchestrator import __version__
+        print(f"Pinky Smart Orchestrator v{__version__}")
+
+    elif args.command == "update":
+        from orchestrator.updater import check_updates, perform_update
+        print("\n[Pinky] Comprobando actualizaciones en GitHub...")
+        current, latest, has_update = asyncio.run(check_updates())
+        if latest:
+            print(f"  Versión actual: v{current}")
+            print(f"  Última versión disponible: v{latest}")
+            if has_update:
+                print(f"\n[Pinky] Nueva versión v{latest} detectada. Actualizando...")
+                success = asyncio.run(perform_update())
+                if success:
+                    print(f"\n[Pinky] Actualizado exitosamente a v{latest}.")
+                else:
+                    print("\n[Pinky] No se pudo completar la actualización automática.")
+            else:
+                print("\n[Pinky] Ya disponen de la versión más reciente.")
+        else:
+            print(f"  Versión actual: v{current}")
+            print("  No se pudo contactar con GitHub. Intentando actualizar repositorio local...")
+            asyncio.run(perform_update())
+
+    elif args.command == "uninstall":
+        from orchestrator.uninstaller import perform_uninstall
+        print("\n[Pinky] Desinstalando Pinky Orchestrator...")
+        cleaned = perform_uninstall(remove_data=args.purge)
+        for c in cleaned:
+            print(f"  • {c}")
+        print("\n[Pinky] Desinstalación completada.")
+
+    elif args.command == "init":
         from orchestrator.installer import scan_and_configure_all
         from pathlib import Path
         proj_dir = Path(args.project) if args.project else Path.cwd()
