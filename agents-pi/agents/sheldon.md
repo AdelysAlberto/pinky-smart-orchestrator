@@ -5,13 +5,7 @@ mode: all
 color: "#00BCD4"
 thinking: high
 systemPrompt: replace
-allowedAgents:
-  - homero
-  - edna
-  - gorgory
-  - tio-bob
-  - contador
-  - saul
+allowedAgents: [homero, edna, gorgory, tio-bob, contador, saul]
 permission:
   "*": allow
   "edit":
