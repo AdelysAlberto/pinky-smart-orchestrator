@@ -7,12 +7,16 @@ from pathlib import Path
 
 
 def _resolve_pinky_cmd() -> str:
-    """Return 'pinky' if on PATH, or the full path to this python/venv executable."""
-    if shutil.which("pinky"):
-        return "pinky"
+    """Return the absolute path to the pinky executable if available, or fallback to 'pinky'."""
+    cmd = shutil.which("pinky")
+    if cmd:
+        return str(Path(cmd).resolve())
+    local_bin = Path.home() / ".local" / "bin" / "pinky"
+    if local_bin.exists():
+        return str(local_bin.resolve())
     venv_bin = Path(__file__).resolve().parent.parent / ".venv" / "bin" / "pinky"
     if venv_bin.exists():
-        return str(venv_bin)
+        return str(venv_bin.resolve())
     return "pinky"
 
 
