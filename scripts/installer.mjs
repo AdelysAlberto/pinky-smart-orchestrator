@@ -506,7 +506,6 @@ const PI_ADDONS = [
   "npm:pi-mcp-adapter",
   "npm:pi-web-access",
   "npm:@juicesharp/rpiv-todo",
-  "npm:pi-memory",
   "npm:@juicesharp/rpiv-ask-user-question",
   "npm:@nguyenquangthai/pi-omp-theme",
   "npm:pi-open-agents",
