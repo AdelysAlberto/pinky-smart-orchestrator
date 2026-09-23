@@ -47,11 +47,21 @@ class OrchestratorConfig(BaseModel):
     host: str = Field(default="127.0.0.1", description="FastAPI server host")
     port: int = Field(default=8765, description="FastAPI server port")
     worktrees_root: Path = Field(
-        default=Path(".pinky/worktrees"),
+        default_factory=lambda: Path(
+            os.getenv(
+                "PINKY_WORKTREES_ROOT",
+                str(Path.home() / ".pinky" / "worktrees"),
+            )
+        ),
         description="Directory where ephemeral Git worktrees are created",
     )
     db_path: Path = Field(
-        default=Path(".pinky/orchestrator.db"),
+        default_factory=lambda: Path(
+            os.getenv(
+                "PINKY_DB_PATH",
+                str(Path.home() / ".pinky" / "orchestrator.db"),
+            )
+        ),
         description="SQLite database path for queue persistence",
     )
     default_branch: str = Field(
