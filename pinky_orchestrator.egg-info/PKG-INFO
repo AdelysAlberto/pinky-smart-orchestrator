@@ -10,6 +10,7 @@ Requires-Dist: pydantic>=2.8.0
 Requires-Dist: httpx>=0.27.0
 Requires-Dist: watchfiles>=0.24.0
 Requires-Dist: websockets>=12.0
+Requires-Dist: mcp>=2.2.0
 
 # Pinky Smart Orchestrator
 
@@ -66,7 +67,7 @@ orchestrator/
 ### Prerequisites
 - Python 3.11+ (Python 3.14 recommended)
 - Git 2.30+
-- At least one supported agent CLI installed (`pi`, `opencode`, or `claude`)
+- At least one supported agent CLI installed (`pi`, `opencode`, or `claude`, ...)
 
 ### Setup Environment
 ```bash

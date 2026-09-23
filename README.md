@@ -50,16 +50,25 @@ orchestrator/
 
 ## 3. Quickstart
 
-### Prerequisites
-- Python 3.11+ (Python 3.14 recommended)
-- Git 2.30+
-- At least one supported agent CLI installed (`pi`, `opencode`, or `claude`)
+### Automated Installation (One-Line Setup)
 
-### Setup Environment
+Install and auto-configure Pinky and all your installed harnesses (Cursor, VS Code, Pi, OpenCode, Claude, etc.) in one command:
+
 ```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/AdelysAlberto/pinky-orchestrator/main/install.sh)
+```
+
+### Manual Installation (From Source)
+
+```bash
+# 1. Run local installer
+./install.sh
+
+# Or install manually via pip:
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
+pip install -e .
+pinky init
 ```
 
 ### Start the Service and Dashboard
