@@ -28,9 +28,24 @@ def main():
     # Command: mcp
     subparsers.add_parser("mcp", help="Run the MCP Server over stdio for Cursor, VS Code, and Pi")
 
+    # Command: init
+    init_parser = subparsers.add_parser("init", help="Scan and configure MCP integration across all installed harnesses")
+    init_parser.add_argument("--project", type=str, default=None, help="Target project directory (defaults to current dir)")
+
     args = parser.parse_args()
 
-    if args.command == "mcp":
+    if args.command == "init":
+        from orchestrator.installer import scan_and_configure_all
+        from pathlib import Path
+        proj_dir = Path(args.project) if args.project else Path.cwd()
+        print("\n[Pinky] Buscando arneses e IDEs instalados...")
+        results = scan_and_configure_all(proj_dir)
+        print(f"\n[Pinky] Configuración completada ({len(results)} destinos integrados):")
+        for r in results:
+            print(f"  + {r}")
+        print("\nAVISO: Si tienen su arnés o IDE abierto (Cursor, VS Code, Pi, OpenCode), reinícienlo para que cargue la nueva configuración del MCP.\n")
+
+    elif args.command == "mcp":
         from orchestrator.mcp_server import main as run_mcp
         run_mcp()
 
