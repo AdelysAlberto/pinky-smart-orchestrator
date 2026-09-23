@@ -32,14 +32,13 @@ const PINKY_HOME = path.join(homedir, ".pinky");
 const HARNESSES = [
   {
     id: "pi",
-    name: "Pi Agent (pi-open-agents)",
+    name: "Pi (pi code)",
     shortDesc: "Agentes, skills y reglas para Pi Coding Agent (~/.pi/agent/)",
     sourceDir: "agents-pi",
     targetDir: path.join(homedir, ".pi", "agent"),
     files: [
       { src: "AGENTS.md", dest: "AGENTS.md" },
       { src: "APPEND_SYSTEM.md", dest: "APPEND_SYSTEM.md" },
-      { src: "settings.json", dest: "settings.json" },
       { src: "agents", dest: "agents", isDir: true },
       { src: "rules", dest: "rules", isDir: true },
       { src: "skills", dest: "skills", isDir: true },
@@ -58,7 +57,6 @@ const HARNESSES = [
     targetDir: path.join(homedir, ".claude"),
     files: [
       { src: "CLAUDE.md", dest: "CLAUDE.md" },
-      { src: "settings.json", dest: "settings.json" },
       { src: "agents", dest: "agents", isDir: true },
       { src: "rules", dest: "rules", isDir: true },
       { src: "skills", dest: "skills", isDir: true },
@@ -706,6 +704,59 @@ async function main() {
   console.log(
     `\n${colors.bold}${colors.magenta}Recordatorio:${colors.reset} Debe ${colors.underline}cerrar y volver a abrir${colors.reset} su entorno/harness para que tome y aplique la nueva configuración de forma inmediata.\n`
   );
+
+  const installedPi = installedList.some((h) => h.id === "pi" || h.id === "all");
+  if (installedPi) {
+    const installAddonsAns = await promptQuestion(
+      `${colors.bold}${colors.yellow}¿Desea instalar los paquetes y plugins recomendados para Pi ahora? (pi-open-agents, mcp, memory, etc.) [S/n]: ${colors.reset}`
+    );
+    if (!installAddonsAns || installAddonsAns.toLowerCase().startsWith("s") || installAddonsAns.toLowerCase().startsWith("y")) {
+      cmdPiAddons();
+    }
+  }
+
+  await promptEnterToExit();
+  process.exit(0);
+}
+
+function promptQuestion(questionText) {
+  return new Promise((resolve) => {
+    if (!process.stdin.isTTY) {
+      resolve("");
+      return;
+    }
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+    rl.question(questionText, (ans) => {
+      rl.close();
+      resolve(ans.trim());
+    });
+  });
+}
+
+function promptEnterToExit() {
+  return new Promise((resolve) => {
+    if (!process.stdin.isTTY) {
+      resolve();
+      return;
+    }
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+    rl.question(
+      `\n${colors.bold}${colors.green}Presione Enter para finalizar y salir...${colors.reset}`,
+      () => {
+        rl.close();
+        if (process.stdin.isTTY) {
+          process.stdin.pause();
+        }
+        resolve();
+      }
+    );
+  });
 }
 
 main().catch((err) => {
