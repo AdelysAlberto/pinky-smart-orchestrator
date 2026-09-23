@@ -1,0 +1,37 @@
+# Documentation (private)
+docs/
+
+# Python virtual environment and caches
+.venv/
+venv/
+ENV/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Pinky ephemeral worktrees and local database
+.pinky/
+*.db
+*.db-journal
+
+# Packaging and build artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# IDE and local editor settings
+.cursor/
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+
+# Backup files
+*.bak
+*.tmp
