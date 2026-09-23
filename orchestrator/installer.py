@@ -87,43 +87,78 @@ When asked to perform architecture design, refactorings, multi-agent builds, or 
     return True
 
 
+def _is_harness_installed(harness_id: str, path: Path, proj_dir: Path, home_dir: Path) -> bool:
+    """Return True ONLY if the corresponding IDE or agent harness is actually installed."""
+    if harness_id == "cursor_project":
+        return (proj_dir / ".cursor").is_dir()
+    elif harness_id == "cursor_global":
+        return (
+            (home_dir / ".cursor" / "mcp.json").exists()
+            or Path("/Applications/Cursor.app").exists()
+            or bool(shutil.which("cursor"))
+        )
+    elif harness_id == "vscode_project":
+        return (proj_dir / ".vscode").is_dir()
+    elif harness_id == "vscode_global":
+        return (
+            (home_dir / ".vscode" / "mcp.json").exists()
+            or Path("/Applications/Visual Studio Code.app").exists()
+            or bool(shutil.which("code"))
+        )
+    elif harness_id == "pi":
+        return (home_dir / ".pi" / "agent").is_dir() or bool(shutil.which("pi"))
+    elif harness_id == "omp":
+        return (home_dir / ".omp" / "agent").is_dir() or bool(shutil.which("omp"))
+    elif harness_id == "opencode":
+        return (home_dir / ".opencode").is_dir() or bool(shutil.which("opencode"))
+    elif harness_id == "claude_desktop":
+        return (
+            path.exists()
+            or Path("/Applications/Claude.app").exists()
+            or (home_dir / "Library" / "Application Support" / "Claude").is_dir()
+        )
+    elif harness_id == "claude_cli":
+        return path.exists() or bool(shutil.which("claude"))
+    elif harness_id == "antigravity":
+        return (home_dir / ".gemini" / "config").is_dir()
+    return False
+
+
 def scan_and_configure_all(project_dir: Path | None = None) -> list[str]:
-    """Scan the system and current project for installed harnesses, configuring MCP in each."""
+    """Scan the system and current project for installed harnesses, configuring MCP ONLY in detected ones."""
     configured: list[str] = []
     proj = (project_dir or Path.cwd()).resolve()
     home = Path.home()
     pinky_cmd = _resolve_pinky_cmd()
 
-    # Target harness detection matrix
-    targets: list[tuple[str, Path, bool]] = [
-        # (Name, ConfigPath, IsProjectLevel)
-        ("Cursor (Project)", proj / ".cursor" / "mcp.json", True),
-        ("VS Code (Project)", proj / ".vscode" / "mcp.json", True),
-        ("Pi Agent (Global)", home / ".pi" / "agent" / "mcp.json", False),
-        ("Oh My Pi / OMP (Global)", home / ".omp" / "agent" / "mcp.json", False),
-        ("OpenCode (Global)", home / ".opencode" / "mcp.json", False),
-        ("Claude Code / Desktop (Global)", home / "Library" / "Application Support" / "Claude" / "claude_desktop_config.json", False),
-        ("Claude Config (~/.claude.json)", home / ".claude.json", False),
-        ("Antigravity Core (Global)", home / ".gemini" / "config" / "mcp_config.json", False),
-        ("Hermes Agent (Global)", home / ".hermes" / "mcp.json", False),
-        ("Windsurf (Global)", home / ".codeium" / "windsurf" / "mcp_config.json", False),
+    # Target harness detection matrix: (id, display_name, config_path)
+    targets: list[tuple[str, str, Path]] = [
+        ("cursor_project", "Cursor (Project)", proj / ".cursor" / "mcp.json"),
+        ("cursor_global", "Cursor (Global)", home / ".cursor" / "mcp.json"),
+        ("vscode_project", "VS Code (Project)", proj / ".vscode" / "mcp.json"),
+        ("vscode_global", "VS Code (Global)", home / ".vscode" / "mcp.json"),
+        ("pi", "Pi Agent (Global)", home / ".pi" / "agent" / "mcp.json"),
+        ("omp", "Oh My Pi / OMP (Global)", home / ".omp" / "agent" / "mcp.json"),
+        ("opencode", "OpenCode (Global)", home / ".opencode" / "mcp.json"),
+        ("claude_desktop", "Claude Desktop (Global)", home / "Library" / "Application Support" / "Claude" / "claude_desktop_config.json"),
+        ("claude_cli", "Claude Config (~/.claude.json)", home / ".claude.json"),
+        ("antigravity", "Antigravity Core (Global)", home / ".gemini" / "config" / "mcp_config.json"),
     ]
 
-    for name, path, is_proj in targets:
-        parent = path.parent
-        # If it's a project-level target or the harness parent directory exists on the system
-        if is_proj or parent.exists() or path.exists():
+    for harness_id, name, path in targets:
+        if _is_harness_installed(harness_id, path, proj, home):
             try:
                 safe_merge_mcp_config(path, command=pinky_cmd)
                 configured.append(f"{name}: {path}")
             except Exception:
                 pass
 
-    # Inject rules into AGENTS.md in project directory
-    try:
-        inject_agent_rules(proj)
-        configured.append(f"AGENTS.md: {proj / 'AGENTS.md'}")
-    except Exception:
-        pass
+    # Inject rules into AGENTS.md in project directory if it is a git repository or AGENTS.md exists
+    if (proj / "AGENTS.md").exists() or (proj / ".git").is_dir():
+        try:
+            inject_agent_rules(proj)
+            configured.append(f"AGENTS.md: {proj / 'AGENTS.md'}")
+        except Exception:
+            pass
 
     return configured
