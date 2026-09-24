@@ -574,11 +574,6 @@ async function cmdHerdr(installedList = []) {
   console.log(`💡 ${colors.bold}Herdr${colors.reset} supervisa y orquesta múltiples agentes CLI en paralelo (Pi, OpenCode, Claude).`);
   console.log(`   ${colors.dim}Más información y lectura recomendada:${colors.reset} ${colors.underline}https://www.webreactiva.com/blog/herdr${colors.reset}\n`);
 
-  if (process.platform === "win32") {
-    console.log(`${colors.yellow}⚠️  Aviso: Herdr no está recomendado en Windows debido a problemas de estabilidad conocidos.${colors.reset}\n`);
-    return;
-  }
-
   const ans = await promptQuestion(
     `${colors.bold}${colors.yellow}¿Desean instalar Herdr, sus integraciones y la skill de agente? [s/N]: ${colors.reset}`
   );
@@ -589,11 +584,26 @@ async function cmdHerdr(installedList = []) {
   }
 
   console.log(`\n${colors.cyan}[1/3] Descargando e instalando binario de Herdr...${colors.reset}`);
-  try {
-    execSync("curl -fsSL https://herdr.dev/install.sh | sh", { stdio: "inherit" });
-    console.log(`${colors.green}✓ Binario de Herdr instalado correctamente.${colors.reset}\n`);
-  } catch (err) {
-    console.error(`${colors.red}Error al instalar Herdr:${colors.reset}`, err.message);
+  if (process.platform === "win32") {
+    try {
+      execSync('powershell -ExecutionPolicy Bypass -c "irm https://herdr.dev/install.ps1 | iex"', { stdio: "inherit" });
+      console.log(`${colors.green}✓ Binario de Herdr instalado correctamente en Windows.${colors.reset}\n`);
+    } catch {
+      console.warn(`${colors.yellow}Aviso: Falló la instalación directa de PowerShell. Intentando con instalador CMD...${colors.reset}`);
+      try {
+        execSync("curl.exe -fsSLo install.cmd https://herdr.dev/install.cmd && install.cmd && del install.cmd", { stdio: "inherit" });
+        console.log(`${colors.green}✓ Binario de Herdr instalado correctamente en Windows.${colors.reset}\n`);
+      } catch (err) {
+        console.error(`${colors.red}Error al instalar Herdr en Windows:${colors.reset}`, err.message);
+      }
+    }
+  } else {
+    try {
+      execSync("curl -fsSL https://herdr.dev/install.sh | sh", { stdio: "inherit" });
+      console.log(`${colors.green}✓ Binario de Herdr instalado correctamente.${colors.reset}\n`);
+    } catch (err) {
+      console.error(`${colors.red}Error al instalar Herdr:${colors.reset}`, err.message);
+    }
   }
 
   console.log(`${colors.cyan}[2/3] Configurando integraciones de agentes...${colors.reset}`);

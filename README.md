@@ -111,10 +111,7 @@ Once installed, the `pinky` command is globally available in any terminal sessio
 > Para comprender en detalle su funcionamiento y flujo de trabajo, recomendamos leer el artículo de referencia:  
 > [WebReactivA: Herdr para desarrolladores](https://www.webreactiva.com/blog/herdr)
 
-> [!WARNING]
-> **Compatibilidad de SO**: Recomendado para **macOS y Linux**. En entornos Windows no está recomendado por incidencias de estabilidad conocidas.
-
-Podéis instalarlo interactivamente con Pinky CLI:
+Podéis instalarlo de forma interactiva y guiada mediante Pinky CLI en cualquier sistema operativo:
 
 ```bash
 pinky herdr
@@ -122,16 +119,31 @@ pinky herdr
 
 O realizar la instalación manual paso a paso:
 
-```bash
-# 1. Instalar binario de Herdr (macOS / Linux)
-curl -fsSL https://herdr.dev/install.sh | sh
+#### 1. Instalar binario de Herdr
 
-# 2. Instalar la integración según el agente
+- **macOS / Linux**:
+  ```bash
+  curl -fsSL https://herdr.dev/install.sh | sh
+  ```
+
+- **Windows (PowerShell)**:
+  ```powershell
+  powershell -ExecutionPolicy Bypass -c "irm https://herdr.dev/install.ps1 | iex"
+  ```
+  *Si las políticas de seguridad de Windows bloquean comandos PowerShell en memoria, ejecuten en Command Prompt (CMD):*
+  ```cmd
+  curl.exe -fsSLo install.cmd https://herdr.dev/install.cmd && install.cmd && del install.cmd
+  ```
+
+#### 2. Instalar la integración según el agente
+```bash
 herdr integration install pi        # Para Pi Coding Agent
 herdr integration install claude    # Para Claude Code
 herdr integration install opencode  # Para OpenCode
+```
 
-# 3. Instalar la skill global de comunicación IPC para agentes
+#### 3. Instalar la skill global de comunicación IPC para agentes
+```bash
 npx skills add ogulcancelik/herdr --skill herdr -g
 ```
 
