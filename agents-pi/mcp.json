@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "cogni": {
+      "args": [
+        "mcp"
+      ],
+      "command": "~/.local/bin/cogni",
+      "type": "stdio",
+      "lifecycle": "eager",
+      "directTools": true
+    }
+  }
+}

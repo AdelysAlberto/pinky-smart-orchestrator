@@ -38,7 +38,9 @@ const HARNESSES = [
     targetDir: path.join(homedir, ".pi", "agent"),
     files: [
       { src: "AGENTS.md", dest: "AGENTS.md" },
-      { src: "APPEND_SYSTEM.md", dest: "APPEND_SYSTEM.md" },
+      {src: "settings.json", dest: "settings.json"},
+      {src: "mcp.json", dest: "mcp.json"},
+      {src: "pi-settings.schema.json", dest: "pi-settings.schema.json"},
       { src: "agents", dest: "agents", isDir: true },
       { src: "rules", dest: "rules", isDir: true },
       { src: "skills", dest: "skills", isDir: true },
@@ -553,6 +555,97 @@ function cmdPiAddons() {
   console.log(`\n${colors.bold}${colors.magenta}Recordatorio:${colors.reset} Cierre y vuelva a abrir su sesión de Pi para cargar los nuevos plugins y extensiones.\n`);
 }
 
+// Helper to check if a command exists in PATH
+function checkCommandExists(cmd) {
+  try {
+    execSync(process.platform === "win32" ? `where ${cmd}` : `which ${cmd} || command -v ${cmd}`, { stdio: "ignore" });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+// Herdr installer & integrator
+async function cmdHerdr(installedList = []) {
+  console.log(`\n${colors.bold}${colors.cyan}======================================================${colors.reset}`);
+  console.log(`${colors.bold}${colors.cyan}       HERDR: MULTI-AGENT DASHBOARD & PANEL MANAGER  ${colors.reset}`);
+  console.log(`${colors.bold}${colors.cyan}======================================================${colors.reset}\n`);
+
+  console.log(`💡 ${colors.bold}Herdr${colors.reset} supervisa y orquesta múltiples agentes CLI en paralelo (Pi, OpenCode, Claude).`);
+  console.log(`   ${colors.dim}Más información y lectura recomendada:${colors.reset} ${colors.underline}https://www.webreactiva.com/blog/herdr${colors.reset}\n`);
+
+  if (process.platform === "win32") {
+    console.log(`${colors.yellow}⚠️  Aviso: Herdr no está recomendado en Windows debido a problemas de estabilidad conocidos.${colors.reset}\n`);
+    return;
+  }
+
+  const ans = await promptQuestion(
+    `${colors.bold}${colors.yellow}¿Desean instalar Herdr, sus integraciones y la skill de agente? [s/N]: ${colors.reset}`
+  );
+
+  if (!ans || (!ans.toLowerCase().startsWith("s") && !ans.toLowerCase().startsWith("y"))) {
+    console.log(`${colors.dim}Omitiendo instalación de Herdr.${colors.reset}\n`);
+    return;
+  }
+
+  console.log(`\n${colors.cyan}[1/3] Descargando e instalando binario de Herdr...${colors.reset}`);
+  try {
+    execSync("curl -fsSL https://herdr.dev/install.sh | sh", { stdio: "inherit" });
+    console.log(`${colors.green}✓ Binario de Herdr instalado correctamente.${colors.reset}\n`);
+  } catch (err) {
+    console.error(`${colors.red}Error al instalar Herdr:${colors.reset}`, err.message);
+  }
+
+  console.log(`${colors.cyan}[2/3] Configurando integraciones de agentes...${colors.reset}`);
+  const hasPi = installedList.some((h) => h.id === "pi" || h.id === "all") || checkCommandExists("pi");
+  const hasClaude = installedList.some((h) => h.id === "claude" || h.id === "all") || checkCommandExists("claude");
+  const hasOpenCode = installedList.some((h) => h.id === "opencode" || h.id === "all") || checkCommandExists("opencode");
+
+  const runHerdr = (cmd) => {
+    try {
+      const herdrBin = path.join(homedir, ".local", "bin", "herdr");
+      const binToUse = fs.existsSync(herdrBin) ? herdrBin : "herdr";
+      execSync(`${binToUse} ${cmd}`, { stdio: "inherit" });
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  if (hasPi) {
+    console.log(`  • Configurando integración para Pi...`);
+    if (runHerdr("integration install pi")) {
+      console.log(`    ${colors.green}✓ Integración Pi instalada.${colors.reset}`);
+    }
+  }
+
+  if (hasClaude) {
+    console.log(`  • Configurando integración para Claude Code...`);
+    if (runHerdr("integration install claude")) {
+      console.log(`    ${colors.green}✓ Integración Claude Code instalada.${colors.reset}`);
+    }
+  }
+
+  if (hasOpenCode) {
+    console.log(`  • Configurando integración para OpenCode...`);
+    if (runHerdr("integration install opencode")) {
+      console.log(`    ${colors.green}✓ Integración OpenCode instalada.${colors.reset}`);
+    }
+  }
+
+  console.log(`\n${colors.cyan}[3/3] Instalando Skill de Herdr de forma global...${colors.reset}`);
+  try {
+    execSync("npx -y skills add ogulcancelik/herdr --skill herdr -g", { stdio: "inherit" });
+    console.log(`\n${colors.green}${colors.bold}✓ Skill de Herdr instalada globalmente.${colors.reset}`);
+  } catch (err) {
+    console.warn(`\n${colors.yellow}Aviso: No se pudo instalar la skill automáticamente:${colors.reset}`, err.message);
+  }
+
+  console.log(`\n${colors.bold}${colors.green}======================================================${colors.reset}`);
+  console.log(`${colors.bold}${colors.green}           HERDR CONFIGURADO CORRECTAMENTE            ${colors.reset}`);
+  console.log(`${colors.bold}${colors.green}======================================================${colors.reset}\n`);
+}
+
 // Command: help
 function cmdHelp() {
   console.log(`
@@ -564,6 +657,7 @@ ${colors.bold}USO:${colors.reset}
 ${colors.bold}COMANDOS:${colors.reset}
   ${colors.green}install${colors.reset} [harness]     Abre el menú interactivo o instala directamente un harness
   ${colors.green}pi-addons${colors.reset}             Instala los plugins recomendados para Pi (pi-open-agents, mcp, memory, etc.)
+  ${colors.green}herdr${colors.reset}                 Instala Herdr Dashboard, integraciones de agentes y skill global
   ${colors.green}upgrade, update${colors.reset}       Actualiza Pinky Core a la última versión y sincroniza los harnesses
   ${colors.green}status, list${colors.reset}          Muestra el estado de instalación de cada harness soportado
   ${colors.green}version, -v${colors.reset}           Muestra la versión instalada y commit actual
@@ -576,6 +670,7 @@ ${colors.bold}EJEMPLOS:${colors.reset}
   pinky                      # Abre el menú interactivo
   pinky install pi           # Instala directamente en Pi Agent
   pinky pi-addons            # Instala los 7 paquetes recomendados de Pi
+  pinky herdr                # Instala Herdr Dashboard e integraciones
   pinky install all          # Instala en todos los harnesses
   pinky upgrade              # Actualiza Pinky y todos los harnesses
   pinky status               # Lista los harnesses configurados
@@ -610,6 +705,11 @@ async function main() {
 
   if (command === "pi-addons" || command === "pi-plugins" || command === "addons") {
     cmdPiAddons();
+    return;
+  }
+
+  if (command === "herdr" || command === "install-herdr") {
+    await cmdHerdr();
     return;
   }
 
@@ -713,6 +813,9 @@ async function main() {
       cmdPiAddons();
     }
   }
+
+  // Herdr multi-agent manager recommendation
+  await cmdHerdr(installedList);
 
   await promptEnterToExit();
   process.exit(0);

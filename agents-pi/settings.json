@@ -1,0 +1,33 @@
+{
+  "$schema": "./pi-settings.schema.json",
+  "lastChangelogVersion": "0.87.1",
+  "theme": "titanium",
+  "quietStartup": "true",
+  "defaultThinkingLevel": "medium",
+  "packages": [
+    "npm:pi-mcp-adapter",
+    "npm:pi-web-access",
+    "npm:@juicesharp/rpiv-todo",
+    "npm:@juicesharp/rpiv-ask-user-question",
+    "/Volumes/Datos/Projects/Pi/extensions/pi-image-normalize",
+    "npm:pi-open-agents",
+    "npm:@nguyenquangthai/pi-omp-theme"
+  ],
+  "hideThinkingBlock": true,
+  "treeFilterMode": "default",
+  "doubleEscapeAction": "tree",
+  "editorPaddingX": 2,
+  "terminal": {
+    "showImages": true,
+    "images": "auto"
+  },
+  "images": {
+    "autoResize": true,
+    "blockImages": false
+  },
+  "fullscreenExitOutput": "resume-hint",
+  "fullscreenScrollbar": "always",
+  "scopeModels": true,
+  "outputPad": 1,
+  "httpIdleTimeoutMs": 120000
+}
