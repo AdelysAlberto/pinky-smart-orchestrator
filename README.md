@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-1.0.5-blue.svg?style=for-the-badge" alt="Version">
+  <img src="https://img.shields.io/badge/Version-2.0.3-blue.svg?style=for-the-badge" alt="Version">
   <img src="https://img.shields.io/badge/Platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey.svg?style=for-the-badge" alt="Platform">
   <img src="https://img.shields.io/badge/Runtime-Node.js%20%7C%20Bun-orange.svg?style=for-the-badge" alt="Runtime">
   <img src="https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge" alt="License">
@@ -87,6 +87,7 @@ Once installed, the `pinky` command is globally available in any terminal sessio
 | `pinky` | Launches the interactive terminal menu to select and install harnesses. | `pinky` |
 | `pinky install <harness>` | Directly installs the bundle into a specific harness (`pi`, `claude`, `cursor`, `codex`, `opencode`, `copilot`, `antigravity`, `all`). | `pinky install pi` |
 | `pinky pi-addons` | Instala los paquetes y extensiones recomendadas para Pi (`pi-open-agents`, `pi-mcp-adapter`, `pi-memory`, etc.). | `pinky pi-addons` |
+| `pinky herdr` | Instala el dashboard Herdr, integraciones de agentes (`pi`, `claude`, `opencode`) y la skill global. | `pinky herdr` |
 | `pinky upgrade` | Pulls the latest Pinky Core updates from GitHub and synchronizes all active harnesses. | `pinky upgrade` |
 | `pinky status` | Displays all configured harnesses and their target filesystem paths. | `pinky status` |
 | `pinky version` | Outputs current installed version, git commit hash, and core directory. | `pinky version` |
@@ -99,6 +100,40 @@ Once installed, the `pinky` command is globally available in any terminal sessio
 - **Typing text**: Instant search and filtering.
 - **Numbers (`1-8`)**: Direct selection by index.
 - **Ctrl+C**: Cancel operation safely.
+
+---
+
+## Multi-Agent Dashboard & Multiplexer (Herdr)
+
+[Herdr](https://herdr.dev/) es un gestor de paneles y multiplexor para terminal diseñado para orquestar y supervisar múltiples sesiones de agentes CLI en paralelo (Pi, OpenCode, Claude Code).
+
+> [!NOTE]
+> Para comprender en detalle su funcionamiento y flujo de trabajo, recomendamos leer el artículo de referencia:  
+> [WebReactivA: Herdr para desarrolladores](https://www.webreactiva.com/blog/herdr)
+
+> [!WARNING]
+> **Compatibilidad de SO**: Recomendado para **macOS y Linux**. En entornos Windows no está recomendado por incidencias de estabilidad conocidas.
+
+Podéis instalarlo interactivamente con Pinky CLI:
+
+```bash
+pinky herdr
+```
+
+O realizar la instalación manual paso a paso:
+
+```bash
+# 1. Instalar binario de Herdr (macOS / Linux)
+curl -fsSL https://herdr.dev/install.sh | sh
+
+# 2. Instalar la integración según el agente
+herdr integration install pi        # Para Pi Coding Agent
+herdr integration install claude    # Para Claude Code
+herdr integration install opencode  # Para OpenCode
+
+# 3. Instalar la skill global de comunicación IPC para agentes
+npx skills add ogulcancelik/herdr --skill herdr -g
+```
 
 ---
 
@@ -125,13 +160,17 @@ All harnesses configured by Pinky strictly adhere to the following technical sta
 3. **File Length Discipline**: Strict maximum of 250 lines of code per file. Break complex modules down into cohesive subcomponents and utilities.
 4. **Vertical Slicing**: Codebases organized by feature domains (`src/modules/<FeatureName>/`) rather than technical layers.
 5. **Anti-AI Footprint**: Prohibition of generic decorative emojis in source code, technical reports, commit messages, and documentation.
-6. **Zero False Positives**: Every task completion must be backed by empirical terminal execution evidence (`bun test`, `biome check`, `typecheck`).
+6. **Zero False Positives & Technical Rigor (Anti-Sycophancy)**:
+   - **No Pandering / Intellectual Honesty**: Never validate flawed premises or anti-patterns to flatter the user. Challenge invalid assumptions with established theory and standards.
+   - **Mandatory Investigation Before Answering**: Prior context investigation is mandatory before emitting judgments. No guesswork or superficial first-found answers.
+   - **Empirical Execution Evidence**: Every completed task must pass deterministic terminal verifications (`bun test`, `biome check`, `typecheck`).
+7. **Production & Live Database Guardrails**: Strictly read-only (`SELECT` only) on production databases. Modification or destructive actions in production are non-negotiable and prohibited.
 
 ---
 
 ## Modular Skills Catalog
 
-The bundle includes 27 modular agent skills compliant with the **Agent Skills** specification (`SKILL.md`):
+The bundle includes modular agent skills compliant with the **Agent Skills** specification (`SKILL.md`):
 
 ### Architecture & Backend
 - `backend-architecture`: Vertical slicing, Result Pattern, structured logging, and HTTP standards.
@@ -172,6 +211,7 @@ The bundle includes 27 modular agent skills compliant with the **Agent Skills** 
 - `linkedin`: Technical thought leadership and architecture storytelling.
 - `graphify`: Persistent knowledge graphs from codebases and documentation.
 - `cogni`: Autonomous semantic memory and token-efficient signature storage.
+- `herdr`: Multi-agent terminal multiplexing, pane orchestration, and socket IPC communication.
 
 ---
 
