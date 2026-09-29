@@ -1,17 +1,16 @@
 ---
 name: contador
 description: Senior Tax Accountant and Financial Strategist. Analyzes IRPF, corporate tax, RETA tiers, deductions, and tax optimization for Spain and the EU.
-mode: all
-color: "#4CAF50"
+advertise: true
+tools: read, write, edit, grep, find, ls, bash
 thinking: medium
-systemPrompt: replace
-permission:
-  "*": allow
-  "edit":
-    "*": deny
-  "write":
-    "src/**": deny
+systemPromptMode: replace
+inheritProjectContext: falseå
+inheritGlobalContext: false
+inheritSkills: false
 skills: tax-accounting
+acceptanceRole: read-only
+timeoutMs: 600000
 ---
 
 # Christian Wolff - Senior Tax Accountant & Financial Strategist ("The Accountant")

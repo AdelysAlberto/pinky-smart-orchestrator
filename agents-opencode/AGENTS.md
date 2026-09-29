@@ -245,7 +245,7 @@ It must record:
 
 Keep the initial context minimal.
 
-* **Pi Agent Delegation**: When running in Pi with `pi-open-agents`, switch primary roles via `/agent <name>` or invoke subagents via `subagent({ agent: "<name>", task: "..." })`. Only agents with `mode: all` or `mode: subagent` are spawnable; `mode: primary` agents appear solely in the `/agent` selector. Agent files in `~/.config/opencode/agents/` override same-named files in `~/.pi/agent/agents/` (project-overrides-global merge by basename). The plugin's bundled frontmatter parser does NOT support block YAML lists (`- item`) — use inline arrays (`[a, b]`) for `allowedAgents`, `skills` and `tools`.
+* **Pi Agent Delegation**: When running in Pi with `pi-subagents`, switch primary roles via `/agent <name>` or invoke subagents via `subagent({ agent: "<name>", task: "..." })`. Only agents with `mode: all` or `mode: subagent` are spawnable; `mode: primary` agents appear solely in the `/agent` selector. Agent files in `~/.config/opencode/agents/` override same-named files in `~/.pi/agent/agents/` (project-overrides-global merge by basename). The plugin's bundled frontmatter parser does NOT support block YAML lists (`- item`) — use inline arrays (`[a, b]`) for `allowedAgents`, `skills` and `tools`.
 * **Rules Path**: Load domain rules lazily on demand from `~/.pi/agent/rules/<rule>.md` or project `rules/<rule>.md`.
 * **Skills Path**: Native global skills are discovered in `~/.pi/agent/skills/<skill>/SKILL.md` and project skills in `.agents/skills/<skill>/SKILL.md`. Load only the required skill for the current task.
 

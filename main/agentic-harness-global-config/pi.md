@@ -33,13 +33,13 @@ Typical global resources include:
 ## 2. Custom agents — native Pi vs extension
 
 ### Native Pi
-Url Documentation: https://pi.dev/packages/pi-open-agents?name=pi-open-agents
+Url Documentation: https://pi.dev/packages/pi-subagents?name=pi-subagents
 
 The Pi website explicitly describes the core harness as minimal and says it skips features such as **sub-agents**. Therefore there is no native core Pi `agents/*.md` declaration to document as if it were built in.
 
-### `pi-open-agents` package
+### `pi-subagents` package
 
-The official Pi package registry documents a `pi-open-agents` package that adds reusable custom agent roles.
+The official Pi package registry documents a `pi-subagents` package that adds reusable custom agent roles.
 
 **Global path supplied by that package:**
 
@@ -123,7 +123,7 @@ The configuration documentation lists global files for keybindings, models, cred
 | Native global skill | `~/.pi/agent/skills/` |
 | Cross-tool skill | `~/.agents/skills/` |
 | Settings | `~/.pi/agent/settings.json` |
-| Custom agents | Not native core; `pi-open-agents` adds `~/.pi/agent/agents/*.md` |
+| Custom agents | Not native core; `pi-subagents` adds `~/.pi/agent/agents/*.md` |
 
 ## 7. Sources
 
@@ -131,4 +131,4 @@ The configuration documentation lists global files for keybindings, models, cred
 - Pi — Configuration: https://pi.dev/docs/latest/configuration
 - Pi — Skills: https://pi.dev/docs/latest/skills
 - Pi — Quickstart: https://pi.dev/docs/latest/quickstart
-- Pi — `pi-open-agents`: https://pi.dev/packages/pi-open-agents
+- Pi — `pi-subagents`: https://pi.dev/packages/pi-subagents

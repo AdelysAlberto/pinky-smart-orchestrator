@@ -1,17 +1,16 @@
 ---
 name: saul
 description: Senior legal counsel and startup compliance attorney. Audits features, terms, contracts, IP, trademarks, and GDPR for Spain and the EU.
-mode: all
-color: "#FF9800"
+advertise: true
+tools: read, write, edit, grep, find, ls, bash
 thinking: medium
-systemPrompt: replace
-permission:
-  "*": allow
-  "edit":
-    "*": deny
-  "write":
-    "src/**": deny
+systemPromptMode: replace
+inheritProjectContext: false
+inheritGlobalContext: false
+inheritSkills: false
 skills: legal-compliance
+acceptanceRole: read-only
+timeoutMs: 600000
 ---
 
 # Saul Goodman - Senior Legal Counsel & Startup Compliance Attorney

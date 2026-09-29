@@ -46,7 +46,7 @@ Rather than relying on single monolithic prompts, Pinky enforces strict separati
 
 | Harness | Platform / Environment | Target Directory | Primary Config File |
 | :--- | :--- | :--- | :--- |
-| **Pi** | Pi Coding Agent (`pi-open-agents`) | `~/.pi/agent/` | `AGENTS.md`, `settings.json` |
+| **Pi** | Pi Coding Agent (`pi-subagents`) | `~/.pi/agent/` | `AGENTS.md`, `settings.json` |
 | **Claude Code** | Anthropic Claude Code CLI | `~/.claude/` | `CLAUDE.md`, `settings.json` |
 | **Cursor** | Cursor IDE & Composer | `~/.cursor/` | `AGENTS.md` |
 | **OpenAI Codex** | OpenAI Codex CLI / Environment | `~/.codex/` | `AGENTS.md`, `config.toml` |
@@ -86,7 +86,7 @@ Once installed, the `pinky` command is globally available in any terminal sessio
 | :--- | :--- | :--- |
 | `pinky` | Launches the interactive terminal menu to select and install harnesses. | `pinky` |
 | `pinky install <harness>` | Directly installs the bundle into a specific harness (`pi`, `claude`, `cursor`, `codex`, `opencode`, `copilot`, `antigravity`, `all`). | `pinky install pi` |
-| `pinky pi-addons` | Instala los paquetes y extensiones recomendadas para Pi (`pi-open-agents`, `pi-mcp-adapter`, `pi-memory`, etc.). | `pinky pi-addons` |
+| `pinky pi-addons` | Instala los paquetes y extensiones recomendadas para Pi (`pi-subagents`, `pi-mcp-adapter`, `pi-web-access`, etc.). | `pinky pi-addons` |
 | `pinky herdr` | Instala el dashboard Herdr, integraciones de agentes (`pi`, `claude`, `opencode`) y la skill global. | `pinky herdr` |
 | `pinky upgrade` | Pulls the latest Pinky Core updates from GitHub and synchronizes all active harnesses. | `pinky upgrade` |
 | `pinky status` | Displays all configured harnesses and their target filesystem paths. | `pinky status` |
@@ -264,7 +264,7 @@ pinky-smart-orchestrator/
 │   └── pinky.ps1               # Windows PowerShell execution wrapper
 ├── scripts/
 │   └── installer.mjs           # Interactive harness selection CLI engine
-├── agents-pi/                  # Bundle for Pi Coding Agent (pi-open-agents)
+├── agents-pi/                  # Bundle for Pi Coding Agent (pi-subagents)
 ├── agents-claude/              # Bundle for Anthropic Claude Code
 ├── agents-cursor/              # Bundle for Cursor IDE & Composer
 ├── agents-codex/               # Bundle for OpenAI Codex

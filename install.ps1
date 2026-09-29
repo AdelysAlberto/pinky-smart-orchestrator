@@ -90,6 +90,22 @@ if ($UserPath -notlike "*$BinDir*") {
     Write-Host "✓ Se agregó '$BinDir' a la variable PATH de usuario en Windows." -ForegroundColor Green
 }
 
+# 5.1 Ensure Cogni semantic memory is installed
+if (-not (Get-Command cogni -ErrorAction SilentlyContinue)) {
+    Write-Host "Verificando e instalando memoria semántica local (Cogni)..." -ForegroundColor Cyan
+    try {
+        if (Get-Command go -ErrorAction SilentlyContinue) {
+            go install github.com/AdelysAlberto/cogni/cmd/cogni@latest 2>$null
+            Write-Host "✓ Cogni instalado con éxito mediante go install." -ForegroundColor Green
+        } else {
+            bash -c "curl -fsSL https://raw.githubusercontent.com/AdelysAlberto/cogni-memory/main/install.sh | bash" 2>$null
+            Write-Host "✓ Cogni instalado con éxito mediante script." -ForegroundColor Green
+        }
+    } catch {
+        Write-Host "Aviso: No se pudo auto-instalar Cogni. Puede instalarlo manualmente." -ForegroundColor Yellow
+    }
+}
+
 # 6. Execute Pinky CLI
 if ($Runtime) {
     & $Runtime (Join-Path $PinkyHome "bin\pinky") $args

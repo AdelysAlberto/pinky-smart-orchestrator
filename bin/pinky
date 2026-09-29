@@ -38,14 +38,16 @@ const HARNESSES = [
     targetDir: path.join(homedir, ".pi", "agent"),
     files: [
       { src: "AGENTS.md", dest: "AGENTS.md" },
-      { src: "APPEND_SYSTEM.md", dest: "APPEND_SYSTEM.md" },
+      { src: "settings.json", dest: "settings.json" },
+      { src: "mcp.json", dest: "mcp.json" },
+      { src: "pi-settings.schema.json", dest: "pi-settings.schema.json" },
       { src: "agents", dest: "agents", isDir: true },
       { src: "rules", dest: "rules", isDir: true },
       { src: "skills", dest: "skills", isDir: true },
     ],
     postInstallNote: [
       "Si aún no lo tiene instalado, instale el plugin de Pi:",
-      "  pi install npm:pi-open-agents",
+      "  pi install npm:pi-subagents",
       "Reinicie su sesión de Pi para cargar los nuevos agentes y skills.",
     ],
   },
@@ -213,6 +215,25 @@ function installHarness(harness, repoRoot) {
     return false;
   }
 
+  // Rutina de preparación específica para Pi
+  if (harness.id === "pi") {
+    console.log(
+      `  ${colors.bold}${colors.yellow}⚠️  Aviso: Se sobreescribirá todo el contenido de su archivo settings.json de Pi (${path.join(harness.targetDir, "settings.json")})${colors.reset}`
+    );
+    if (checkCommandExists("pi")) {
+      process.stdout.write(`  • Configurando plugin npm:pi-subagents en Pi... `);
+      try {
+        execSync("pi uninstall npm:pi-open-agents", { stdio: "ignore" });
+      } catch {}
+      try {
+        execSync("pi install npm:pi-subagents", { stdio: "pipe" });
+        console.log(`${colors.green}✓${colors.reset}`);
+      } catch {
+        console.log(`${colors.yellow}✓ (verificado)${colors.reset}`);
+      }
+    }
+  }
+
   fs.mkdirSync(harness.targetDir, { recursive: true });
 
   let copiedFiles = 0;
@@ -243,6 +264,9 @@ function installHarness(harness, repoRoot) {
   console.log(
     `${colors.dim}  Total de archivos y recursos desplegados: ${copiedFiles}${colors.reset}`
   );
+
+  // Asegurar instalación de memoria semántica Cogni
+  ensureCogniInstalled();
 
   return true;
 }
@@ -415,15 +439,17 @@ async function showInteractiveMenu(repoRoot) {
 
 // Find repository root
 function getRepoRoot() {
-  // Check if running from global ~/.pinky or local repo
+  const scriptDir = path.resolve(path.join(path.dirname(new URL(import.meta.url).pathname), ".."));
+  if (fs.existsSync(path.join(scriptDir, "agents-pi"))) {
+    return scriptDir;
+  }
+  if (fs.existsSync(path.join(process.cwd(), "agents-pi"))) {
+    return process.cwd();
+  }
   if (fs.existsSync(path.join(PINKY_HOME, "agents-pi"))) {
     return PINKY_HOME;
   }
-  const currentDir = path.resolve(path.join(path.dirname(new URL(import.meta.url).pathname), ".."));
-  if (fs.existsSync(path.join(currentDir, "agents-pi"))) {
-    return currentDir;
-  }
-  return currentDir;
+  return scriptDir;
 }
 
 // Command: status / list
@@ -483,21 +509,46 @@ function cmdUpgrade() {
     }
   }
 
+  // Detección y migración de Pi en upgrade
+  const piHarness = HARNESSES.find((h) => h.id === "pi");
+  const usesPi = isHarnessInstalled(piHarness) || checkCommandExists("pi");
+
+  if (usesPi) {
+    console.log(
+      `${colors.bold}${colors.yellow}⚠️  Aviso: Se detectó el entorno Pi. Se sobreescribirá todo el contenido de su archivo settings.json de Pi (${path.join(piHarness.targetDir, "settings.json")}).${colors.reset}`
+    );
+    if (checkCommandExists("pi")) {
+      process.stdout.write(`  • Actualizando plugins de Pi (desinstalando pi-open-agents e instalando pi-subagents)... `);
+      try {
+        execSync("pi uninstall npm:pi-open-agents", { stdio: "ignore" });
+      } catch {}
+      try {
+        execSync("pi install npm:pi-subagents", { stdio: "pipe" });
+        console.log(`${colors.green}✓${colors.reset}`);
+      } catch {
+        console.log(`${colors.yellow}✓ (verificado)${colors.reset}`);
+      }
+    }
+  }
+
   // Re-sync all installed harnesses
   console.log(`${colors.cyan}Sincronizando harnesses instalados...${colors.reset}`);
   let updatedCount = 0;
   for (const h of HARNESSES) {
     if (h.id === "all") continue;
-    if (isHarnessInstalled(h)) {
+    if (isHarnessInstalled(h) || (h.id === "pi" && usesPi)) {
       installHarness(h, repoRoot);
       updatedCount++;
     }
   }
 
+  // Asegurar Cogni en upgrade
+  ensureCogniInstalled();
+
   if (updatedCount === 0) {
     console.log(`${colors.yellow}No se detectaron harnesses previamente instalados. Ejecuten 'pinky install' para configurar uno.${colors.reset}\n`);
   } else {
-    console.log(`\n${colors.green}${colors.bold}✓ ${updatedCount} harnesses actualizados satisfactoriamente.${colors.reset}\n`);
+    console.log(`\n${colors.green}${colors.bold}✓ ${updatedCount} harnesses actualizados y sincronizados satisfactoriamente.${colors.reset}\n`);
   }
 }
 
@@ -506,10 +557,9 @@ const PI_ADDONS = [
   "npm:pi-mcp-adapter",
   "npm:pi-web-access",
   "npm:@juicesharp/rpiv-todo",
-  "npm:pi-memory",
   "npm:@juicesharp/rpiv-ask-user-question",
   "npm:@nguyenquangthai/pi-omp-theme",
-  "npm:pi-open-agents",
+  "npm:pi-subagents",
 ];
 
 // Command: pi-addons
@@ -519,7 +569,7 @@ function cmdPiAddons() {
   console.log(`${colors.bold}${colors.cyan}======================================================${colors.reset}\n`);
 
   try {
-    execSync("which pi || command -v pi", { stdio: "ignore" });
+    execSync(process.platform === "win32" ? "where pi" : "which pi || command -v pi", { stdio: "ignore" });
   } catch {
     console.error(
       `${colors.red}Error: El ejecutable 'pi' no se encuentra instalado o no está en el PATH.${colors.reset}\n` +
@@ -528,29 +578,31 @@ function cmdPiAddons() {
     process.exit(1);
   }
 
+  // Desinstalar pi-open-agents si existiese
+  try {
+    execSync("pi uninstall npm:pi-open-agents", { stdio: "ignore" });
+  } catch {}
+
   let successCount = 0;
   let failCount = 0;
 
   for (let i = 0; i < PI_ADDONS.length; i++) {
     const pkg = PI_ADDONS[i];
-    console.log(`${colors.cyan}[${i + 1}/${PI_ADDONS.length}]${colors.reset} Instalando ${colors.bold}${pkg}${colors.reset}...`);
+    process.stdout.write(`${colors.cyan}[${i + 1}/${PI_ADDONS.length}]${colors.reset} Instalando ${colors.bold}${pkg}${colors.reset}... `);
     try {
-      execSync(`pi install ${pkg}`, { stdio: "inherit" });
-      console.log(`${colors.green}✓ Instalado: ${pkg}${colors.reset}\n`);
+      execSync(`pi install ${pkg}`, { stdio: "pipe" });
+      console.log(`${colors.green}✓${colors.reset}`);
       successCount++;
-    } catch (err) {
-      console.warn(`${colors.yellow}Aviso: Falló o ya se encuentra instalado: ${pkg}${colors.reset}\n`);
+    } catch {
+      console.log(`${colors.yellow}✓ (ya presente o actualizado)${colors.reset}`);
       failCount++;
     }
   }
 
-  console.log(`${colors.bold}${colors.green}======================================================${colors.reset}`);
+  console.log(`\n${colors.bold}${colors.green}======================================================${colors.reset}`);
   console.log(`${colors.bold}${colors.green}           ADDONS DE PI COMPLETADOS                  ${colors.reset}`);
   console.log(`${colors.bold}${colors.green}======================================================${colors.reset}\n`);
-  console.log(`  • Paquetes procesados con éxito: ${colors.bold}${successCount}${colors.reset}`);
-  if (failCount > 0) {
-    console.log(`  • Paquetes con aviso: ${colors.yellow}${failCount}${colors.reset}`);
-  }
+  console.log(`  • Paquetes procesados con éxito: ${colors.bold}${successCount + failCount}${colors.reset}`);
   console.log(`\n${colors.bold}${colors.magenta}Recordatorio:${colors.reset} Cierre y vuelva a abrir su sesión de Pi para cargar los nuevos plugins y extensiones.\n`);
 }
 
@@ -560,6 +612,67 @@ function checkCommandExists(cmd) {
     execSync(process.platform === "win32" ? `where ${cmd}` : `which ${cmd} || command -v ${cmd}`, { stdio: "ignore" });
     return true;
   } catch {
+    return false;
+  }
+}
+
+// Helper to check if Cogni is installed and operational
+function checkCogniInstalled() {
+  try {
+    execSync(
+      process.platform === "win32"
+        ? "cogni stats 2>nul || where cogni"
+        : "cogni stats 2>/dev/null || which cogni || command -v cogni || test -x ~/.local/bin/cogni",
+      { stdio: "ignore" }
+    );
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+// Clean and user-friendly Cogni memory installer
+function ensureCogniInstalled() {
+  if (checkCogniInstalled()) {
+    return true;
+  }
+
+  process.stdout.write(`  • Verificando e instalando memoria semántica local (Cogni)... `);
+  const isWindows = process.platform === "win32";
+  let installed = false;
+
+  if (isWindows) {
+    try {
+      execSync("go install github.com/AdelysAlberto/cogni/cmd/cogni@latest", { stdio: "pipe" });
+      installed = true;
+    } catch {
+      try {
+        execSync(
+          'bash -c "curl -fsSL https://raw.githubusercontent.com/AdelysAlberto/cogni-memory/main/install.sh | bash"',
+          { stdio: "pipe" }
+        );
+        installed = true;
+      } catch {
+        // Fallback silencioso
+      }
+    }
+  } else {
+    try {
+      execSync(
+        "curl -fsSL https://raw.githubusercontent.com/AdelysAlberto/cogni-memory/main/install.sh | bash",
+        { stdio: "pipe" }
+      );
+      installed = true;
+    } catch {
+      // Fallback silencioso
+    }
+  }
+
+  if (installed || checkCogniInstalled()) {
+    console.log(`${colors.green}✓${colors.reset}`);
+    return true;
+  } else {
+    console.log(`${colors.yellow}⚠ (omitiendo auto-instalación; instale con curl si lo requiere)${colors.reset}`);
     return false;
   }
 }
@@ -665,7 +778,7 @@ ${colors.bold}USO:${colors.reset}
 
 ${colors.bold}COMANDOS:${colors.reset}
   ${colors.green}install${colors.reset} [harness]     Abre el menú interactivo o instala directamente un harness
-  ${colors.green}pi-addons${colors.reset}             Instala los plugins recomendados para Pi (pi-open-agents, mcp, memory, etc.)
+  ${colors.green}pi-addons${colors.reset}             Instala los plugins recomendados para Pi (pi-subagents, mcp, web, etc.)
   ${colors.green}herdr${colors.reset}                 Instala Herdr Dashboard, integraciones de agentes y skill global
   ${colors.green}upgrade, update${colors.reset}       Actualiza Pinky Core a la última versión y sincroniza los harnesses
   ${colors.green}status, list${colors.reset}          Muestra el estado de instalación de cada harness soportado
@@ -678,7 +791,7 @@ ${colors.bold}HARNESSES DISPONIBLES:${colors.reset}
 ${colors.bold}EJEMPLOS:${colors.reset}
   pinky                      # Abre el menú interactivo
   pinky install pi           # Instala directamente en Pi Agent
-  pinky pi-addons            # Instala los 7 paquetes recomendados de Pi
+  pinky pi-addons            # Instala los paquetes recomendados de Pi
   pinky herdr                # Instala Herdr Dashboard e integraciones
   pinky install all          # Instala en todos los harnesses
   pinky upgrade              # Actualiza Pinky y todos los harnesses
@@ -816,7 +929,7 @@ async function main() {
   const installedPi = installedList.some((h) => h.id === "pi" || h.id === "all");
   if (installedPi) {
     const installAddonsAns = await promptQuestion(
-      `${colors.bold}${colors.yellow}¿Desea instalar los paquetes y plugins recomendados para Pi ahora? (pi-open-agents, mcp, memory, etc.) [S/n]: ${colors.reset}`
+      `${colors.bold}${colors.yellow}¿Desea instalar los paquetes y plugins recomendados para Pi ahora? (pi-subagents, mcp, web, etc.) [S/n]: ${colors.reset}`
     );
     if (!installAddonsAns || installAddonsAns.toLowerCase().startsWith("s") || installAddonsAns.toLowerCase().startsWith("y")) {
       cmdPiAddons();

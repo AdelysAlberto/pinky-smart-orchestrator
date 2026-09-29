@@ -173,6 +173,16 @@ fi
 
 export PATH="$BIN_DIR:$PATH"
 
+# Ensure Cogni semantic memory is installed
+if ! command -v cogni >/dev/null 2>&1 && [ ! -x "$HOME/.local/bin/cogni" ]; then
+  printf "${CYAN}Verificando e instalando memoria semántica local (Cogni)...${NC} "
+  if curl -fsSL https://raw.githubusercontent.com/AdelysAlberto/cogni-memory/main/install.sh 2>/dev/null | bash >/dev/null 2>&1; then
+    printf "${GREEN}✓${NC}\n"
+  else
+    printf "${YELLOW}⚠ (omitiendo auto-instalación)${NC}\n"
+  fi
+fi
+
 # Execute pinky interactive CLI
 if [ -n "$RUNTIME_BIN" ]; then
   "$RUNTIME_BIN" "$PINKY_DIR/bin/pinky" "$@"

@@ -1,14 +1,15 @@
-# Pi Agent Bundle (pi-open-agents)
+# Pi Agent Bundle (pi-subagents)
 
-Este directorio contiene la suite de agentes optimizados, reglas de ingeniería y skills adaptados para el harness de codificación **Pi** con el plugin `pi-open-agents`.
+Este directorio contiene la suite de agentes optimizados, reglas de ingeniería y skills adaptados para el harness de codificación **Pi** con el plugin `pi-subagents`.
 
 ## Estructura del Bundle
 
 ```text
 agents-pi/
 ├── AGENTS.md            # Protocolo de enrutamiento y delegación para Pi
-├── APPEND_SYSTEM.md     # Invariantes universales del sistema
-├── settings.json        # Configuración de Pi con soporte para pi-open-agents
+├── settings.json        # Configuración de Pi con soporte para pi-subagents
+├── mcp.json             # Servidores MCP configurados para Pi
+├── pi-settings.schema.json
 ├── agents/              # Definiciones de roles de agente (.md con frontmatter)
 │   ├── sheldon.md       # Arquitecto jefe y orquestador (SDD / Plan)
 │   ├── homero.md        # Constructor e implementador táctico
@@ -32,9 +33,10 @@ agents-pi/
 
 Para desplegar este bundle en el entorno global de Pi (`~/.pi/agent/`):
 
-1. **Instalar el plugin de gestión de agentes:**
+1. **Instalar el plugin de subagentes (y desinstalar pi-open-agents si existía):**
    ```bash
-   pi install npm:pi-open-agents
+   pi uninstall npm:pi-open-agents 2>/dev/null || true
+   pi install npm:pi-subagents
    ```
 
 2. **Copiar o enlazar los recursos:**

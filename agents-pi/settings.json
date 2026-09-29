@@ -9,9 +9,8 @@
     "npm:pi-web-access",
     "npm:@juicesharp/rpiv-todo",
     "npm:@juicesharp/rpiv-ask-user-question",
-    "/Volumes/Datos/Projects/Pi/extensions/pi-image-normalize",
-    "npm:pi-open-agents",
-    "npm:@nguyenquangthai/pi-omp-theme"
+    "npm:@nguyenquangthai/pi-omp-theme",
+    "npm:pi-subagents"
   ],
   "hideThinkingBlock": true,
   "treeFilterMode": "default",
@@ -29,5 +28,24 @@
   "fullscreenScrollbar": "always",
   "scopeModels": true,
   "outputPad": 1,
-  "httpIdleTimeoutMs": 120000
+  "httpIdleTimeoutMs": 120000,
+  "subagents": {
+    "disableBuiltins": true,
+    "defaultContext": "fresh",
+    "toolTimeoutMs": 180000,
+    "agentOverrides": {
+      "homero": {
+        "model": "deepseek/deepseek-flash",
+        "thinking": "low"
+      },
+      "tio-bob": {
+        "model": "deepseek/deepseek-flash",
+        "thinking": "low"
+      },
+      "sheldon": {
+        "model": "deepseek/deepseek-flash",
+        "thinking": "medium"
+      }
+    }
+  }
 }
