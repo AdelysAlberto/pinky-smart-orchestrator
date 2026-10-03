@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/pinky-logo.svg" width="150" height="150" alt="Pinky Smart Orchestrator" />
+</p>
+
 <h1 align="center">Pinky Smart Orchestrator</h1>
 
 <p align="center">
@@ -6,7 +10,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-2.0.3-blue.svg?style=for-the-badge" alt="Version">
+  <img src="https://img.shields.io/badge/Version-2.0.7-blue.svg?style=for-the-badge" alt="Version">
   <img src="https://img.shields.io/badge/Platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey.svg?style=for-the-badge" alt="Platform">
   <img src="https://img.shields.io/badge/Runtime-Node.js%20%7C%20Bun-orange.svg?style=for-the-badge" alt="Runtime">
   <img src="https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge" alt="License">
