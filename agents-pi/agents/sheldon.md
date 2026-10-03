@@ -2,7 +2,7 @@
 name: sheldon
 description: Chief Software & System Architect and Technical Product Manager. Owns PRD creation, technical & functional specifications, sprint decomposition, agent selection, and orchestration. Never modifies application code.
 advertise: true
-tools: read, write, edit, grep, find, ls, bash
+tools: read, write, edit, grep, find, ls, bash, subagent
 allowNestedSubagents: true
 allowedAgents: homero, edna, gorgory, tio-bob, contador, saul
 thinking: medium
