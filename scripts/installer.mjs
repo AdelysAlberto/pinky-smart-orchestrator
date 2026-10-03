@@ -205,6 +205,62 @@ function isHarnessInstalled(harness) {
   return fs.existsSync(harness.targetDir);
 }
 
+// Merge Pi settings.json preserving user models, providers, and custom configurations
+function mergePiSettings(targetPath, templatePath) {
+  try {
+    const templateContent = JSON.parse(fs.readFileSync(templatePath, "utf-8"));
+    let userContent = {};
+    if (fs.existsSync(targetPath)) {
+      try {
+        userContent = JSON.parse(fs.readFileSync(targetPath, "utf-8"));
+      } catch {
+        userContent = {};
+      }
+    }
+
+    // Merge packages without duplicates
+    const basePackages = templateContent.packages || [];
+    const userPackages = userContent.packages || [];
+    const mergedPackages = Array.from(new Set([...userPackages, ...basePackages]));
+
+    // Merge extensions without duplicates
+    const baseExtensions = templateContent.extensions || [];
+    const userExtensions = userContent.extensions || [];
+    const mergedExtensions = Array.from(new Set([...userExtensions, ...baseExtensions]));
+
+    // Merge subagents settings preserving user overrides
+    const baseSubagents = templateContent.subagents || {};
+    const userSubagents = userContent.subagents || {};
+    const mergedSubagents = {
+      ...baseSubagents,
+      ...userSubagents,
+      disableBuiltins:
+        userSubagents.disableBuiltins !== undefined
+          ? userSubagents.disableBuiltins
+          : baseSubagents.disableBuiltins,
+      defaultContext: userSubagents.defaultContext || baseSubagents.defaultContext,
+      agentOverrides: {
+        ...(baseSubagents.agentOverrides || {}),
+        ...(userSubagents.agentOverrides || {}),
+      },
+    };
+
+    // Retain all existing user fields (e.g. defaultProvider, defaultModel, enabledModels, theme)
+    const merged = {
+      ...templateContent,
+      ...userContent,
+      packages: mergedPackages,
+      extensions: mergedExtensions,
+      subagents: mergedSubagents,
+      $schema: userContent.$schema || templateContent.$schema,
+    };
+
+    fs.writeFileSync(targetPath, JSON.stringify(merged, null, 2) + "\n", "utf-8");
+  } catch {
+    fs.copyFileSync(templatePath, targetPath);
+  }
+}
+
 // Install a single harness
 function installHarness(harness, repoRoot) {
   console.log(`\n${colors.cyan}--- Instalando ${harness.name} ---${colors.reset}`);
@@ -219,9 +275,6 @@ function installHarness(harness, repoRoot) {
 
   // Rutina de preparación específica para Pi
   if (harness.id === "pi") {
-    console.log(
-      `  ${colors.bold}${colors.yellow}⚠️  Aviso: Se sobreescribirá todo el contenido de su archivo settings.json de Pi (${path.join(harness.targetDir, "settings.json")})${colors.reset}`
-    );
     if (checkCommandExists("pi")) {
       process.stdout.write(`  • Configurando plugins y extensiones en Pi... `);
       try {
@@ -264,7 +317,11 @@ function installHarness(harness, repoRoot) {
       copiedFiles += countFiles(srcPath);
     } else {
       fs.mkdirSync(path.dirname(destPath), { recursive: true });
-      fs.copyFileSync(srcPath, destPath);
+      if (harness.id === "pi" && item.dest === "settings.json") {
+        mergePiSettings(destPath, srcPath);
+      } else {
+        fs.copyFileSync(srcPath, destPath);
+      }
       copiedFiles += 1;
     }
   }
@@ -525,9 +582,6 @@ function cmdUpgrade() {
   const usesPi = isHarnessInstalled(piHarness) || checkCommandExists("pi");
 
   if (usesPi) {
-    console.log(
-      `${colors.bold}${colors.yellow}⚠️  Aviso: Se detectó el entorno Pi. Se sobreescribirá todo el contenido de su archivo settings.json de Pi (${path.join(piHarness.targetDir, "settings.json")}).${colors.reset}`
-    );
     if (checkCommandExists("pi")) {
       process.stdout.write(`  • Actualizando plugins y extensiones de Pi... `);
       try {

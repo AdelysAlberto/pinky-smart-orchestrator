@@ -1,10 +1,7 @@
 {
   "$schema": "./pi-settings.schema.json",
-  "lastChangelogVersion": "1.0.0",
   "theme": "titanium",
   "quietStartup": "true",
-  "defaultProvider": "cxsos",
-  "defaultModel": "dell3-heretic",
   "defaultThinkingLevel": "medium",
   "packages": [
     "npm:pi-web-access",
@@ -27,34 +24,12 @@
   },
   "fullscreenExitOutput": "resume-hint",
   "fullscreenScrollbar": "always",
-  "enabledModels": [
-    "deepseek/deepseek-flash",
-    "deepseek/deepseek-v4-pro",
-    "deepseek-ryg/deepseek-flash",
-    "cxsos/dell3-heretic"
-  ],
-  "scopeModels": true,
   "outputPad": 1,
   "httpIdleTimeoutMs": 600000,
   "subagents": {
     "disableBuiltins": true,
     "defaultContext": "fresh",
-    "defaultModel": "cxsos/dell3-heretic",
-    "defaultThinking": "medium",
-    "agentOverrides": {
-      "homero": {
-        "model": "cxsos/dell3-heretic",
-        "thinking": "medium"
-      },
-      "tio-bob": {
-        "model": "deepseek-ryg/deepseek-flash",
-        "thinking": "high"
-      },
-      "sheldon": {
-        "model": "cxsos/dell3-heretic",
-        "thinking": "medium"
-      }
-    }
+    "defaultThinking": "medium"
   },
   "extensions": [
     "+builtin:mcp"
