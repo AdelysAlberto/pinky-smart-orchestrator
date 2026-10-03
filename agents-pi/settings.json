@@ -27,13 +27,11 @@
   },
   "fullscreenExitOutput": "resume-hint",
   "fullscreenScrollbar": "always",
-  "sessionDir": "/Volumes/Datos/Projects/session",
   "enabledModels": [
     "deepseek/deepseek-flash",
     "deepseek/deepseek-v4-pro",
     "deepseek-ryg/deepseek-flash",
-    "cxsos/dell3-heretic",
-    "splash/incoai/Qwen3.8-27B-Splash"
+    "cxsos/dell3-heretic"
   ],
   "scopeModels": true,
   "outputPad": 1,
