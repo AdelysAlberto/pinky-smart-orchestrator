@@ -1,0 +1,11 @@
+{
+  "intercomBridge": {
+    "mode": "off"
+  },
+  "disabledFeatures": [
+    "external-machines",
+    "spawn-budget-grants",
+    "lane-metadata",
+    "panes"
+  ]
+}

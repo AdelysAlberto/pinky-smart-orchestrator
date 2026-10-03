@@ -46,12 +46,6 @@ Strictly prohibit desperate engagement hooks:
 - BANNED: *"Sígueme para más reflexiones"*
 The post must stand on its own intellectual merit. If a reader comments, it should be because the engineering trade-off provoked authentic curiosity or debate.
 
-### Invariant 5: Total Anonymity & Product Isolation
-Never mention proprietary product names, company names, or internal features. Abstract everything into clean engineering concepts:
-- Instead of "Viasera navigation app" -> *"un sistema reactivo con eventos en tiempo real"*
-- Instead of "Valhalla routing engine" -> *"un motor de cálculo geoespacial de terceros"*
-- Instead of "arrival voice maneuver" -> *"un flujo de telemetría donde la semántica del proveedor invierte el orden temporal"*
-
 ---
 
 ## 2. Voice & Tone Architecture: Finch + Edna

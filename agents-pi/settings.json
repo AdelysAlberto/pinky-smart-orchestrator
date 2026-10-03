@@ -1,8 +1,10 @@
 {
   "$schema": "./pi-settings.schema.json",
-  "lastChangelogVersion": "0.87.1",
+  "lastChangelogVersion": "1.0.0",
   "theme": "titanium",
   "quietStartup": "true",
+  "defaultProvider": "cxsos",
+  "defaultModel": "dell3-heretic",
   "defaultThinkingLevel": "medium",
   "packages": [
     "npm:pi-web-access",
@@ -25,26 +27,38 @@
   },
   "fullscreenExitOutput": "resume-hint",
   "fullscreenScrollbar": "always",
+  "sessionDir": "/Volumes/Datos/Projects/session",
+  "enabledModels": [
+    "deepseek/deepseek-flash",
+    "deepseek/deepseek-v4-pro",
+    "deepseek-ryg/deepseek-flash",
+    "cxsos/dell3-heretic",
+    "splash/incoai/Qwen3.8-27B-Splash"
+  ],
   "scopeModels": true,
   "outputPad": 1,
-  "httpIdleTimeoutMs": 120000,
+  "httpIdleTimeoutMs": 600000,
   "subagents": {
     "disableBuiltins": true,
     "defaultContext": "fresh",
-    "toolTimeoutMs": 180000,
+    "defaultModel": "cxsos/dell3-heretic",
+    "defaultThinking": "medium",
     "agentOverrides": {
       "homero": {
-        "model": "deepseek/deepseek-flash",
-        "thinking": "low"
+        "model": "cxsos/dell3-heretic",
+        "thinking": "medium"
       },
       "tio-bob": {
-        "model": "deepseek/deepseek-flash",
-        "thinking": "low"
+        "model": "deepseek-ryg/deepseek-flash",
+        "thinking": "high"
       },
       "sheldon": {
-        "model": "deepseek/deepseek-flash",
+        "model": "cxsos/dell3-heretic",
         "thinking": "medium"
       }
     }
-  }
+  },
+  "extensions": [
+    "+builtin:mcp"
+  ]
 }

@@ -5,7 +5,7 @@ advertise: true
 tools: read, write, edit, grep, find, ls, bash
 thinking: medium
 systemPromptMode: replace
-inheritProjectContext: false
+inheritProjectContext: true
 inheritGlobalContext: false
 inheritSkills: false
 skills: react-typescript-clean-code, react-native-architecture, backend-architecture, testing-strategy, database-design, zustand, css-architecture

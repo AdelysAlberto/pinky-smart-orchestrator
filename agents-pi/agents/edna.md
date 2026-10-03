@@ -5,7 +5,7 @@ advertise: true
 tools: read, write, edit, grep, find, ls, bash
 thinking: medium
 systemPromptMode: replace
-inheritProjectContext: false
+inheritProjectContext: true
 inheritGlobalContext: false
 inheritSkills: false
 skills: visual-craft, frontend-design, ux-wireframing, mobile-native, ux-decision, ui-craft, ui-craft-dense-dashboard, ui-craft-editorial, ui-craft-minimal, accessibility, impeccable
