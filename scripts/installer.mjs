@@ -6,7 +6,7 @@ import os from "node:os";
 import readline from "node:readline";
 import { execSync } from "node:child_process";
 
-const VERSION = "2.0.4";
+const VERSION = "2.0.5";
 const REPO_URL = "https://github.com/AdelysAlberto/pinky-smart-orchestrator.git";
 
 // ANSI Color codes and styles
@@ -113,6 +113,7 @@ const HARNESSES = [
       { src: "opencode.json", dest: "opencode.json" },
       { src: "agents", dest: "agents", isDir: true },
       { src: "rules", dest: "rules", isDir: true },
+      { src: "commands", dest: "commands", isDir: true },
       { src: "skills", dest: "skills", isDir: true },
     ],
     postInstallNote: [
@@ -221,9 +222,18 @@ function installHarness(harness, repoRoot) {
       `  ${colors.bold}${colors.yellow}⚠️  Aviso: Se sobreescribirá todo el contenido de su archivo settings.json de Pi (${path.join(harness.targetDir, "settings.json")})${colors.reset}`
     );
     if (checkCommandExists("pi")) {
-      process.stdout.write(`  • Configurando plugin npm:pi-subagents en Pi... `);
+      process.stdout.write(`  • Configurando plugins y extensiones en Pi... `);
       try {
         execSync("pi uninstall npm:pi-open-agents", { stdio: "ignore" });
+      } catch {}
+      try {
+        execSync("pi uninstall npm:pi-mcp-adapter", { stdio: "ignore" });
+      } catch {}
+      try {
+        execSync("pi update --extensions", { stdio: "ignore" });
+      } catch {}
+      try {
+        execSync("pi update", { stdio: "ignore" });
       } catch {}
       try {
         execSync("pi install npm:pi-subagents", { stdio: "pipe" });
@@ -518,9 +528,18 @@ function cmdUpgrade() {
       `${colors.bold}${colors.yellow}⚠️  Aviso: Se detectó el entorno Pi. Se sobreescribirá todo el contenido de su archivo settings.json de Pi (${path.join(piHarness.targetDir, "settings.json")}).${colors.reset}`
     );
     if (checkCommandExists("pi")) {
-      process.stdout.write(`  • Actualizando plugins de Pi (desinstalando pi-open-agents e instalando pi-subagents)... `);
+      process.stdout.write(`  • Actualizando plugins y extensiones de Pi... `);
       try {
         execSync("pi uninstall npm:pi-open-agents", { stdio: "ignore" });
+      } catch {}
+      try {
+        execSync("pi uninstall npm:pi-mcp-adapter", { stdio: "ignore" });
+      } catch {}
+      try {
+        execSync("pi update --extensions", { stdio: "ignore" });
+      } catch {}
+      try {
+        execSync("pi update", { stdio: "ignore" });
       } catch {}
       try {
         execSync("pi install npm:pi-subagents", { stdio: "pipe" });
@@ -554,7 +573,6 @@ function cmdUpgrade() {
 
 // Pi addons list
 const PI_ADDONS = [
-  "npm:pi-mcp-adapter",
   "npm:pi-web-access",
   "npm:@juicesharp/rpiv-todo",
   "npm:@juicesharp/rpiv-ask-user-question",
@@ -578,9 +596,20 @@ function cmdPiAddons() {
     process.exit(1);
   }
 
-  // Desinstalar pi-open-agents si existiese
+  // Desinstalar plugins obsoletos (pi-open-agents, pi-mcp-adapter) si existiesen
   try {
     execSync("pi uninstall npm:pi-open-agents", { stdio: "ignore" });
+  } catch {}
+  try {
+    execSync("pi uninstall npm:pi-mcp-adapter", { stdio: "ignore" });
+  } catch {}
+
+  // Actualizar extensiones y paquetes de Pi
+  try {
+    execSync("pi update --extensions", { stdio: "ignore" });
+  } catch {}
+  try {
+    execSync("pi update", { stdio: "ignore" });
   } catch {}
 
   let successCount = 0;
@@ -778,7 +807,7 @@ ${colors.bold}USO:${colors.reset}
 
 ${colors.bold}COMANDOS:${colors.reset}
   ${colors.green}install${colors.reset} [harness]     Abre el menú interactivo o instala directamente un harness
-  ${colors.green}pi-addons${colors.reset}             Instala los plugins recomendados para Pi (pi-subagents, mcp, web, etc.)
+  ${colors.green}pi-addons${colors.reset}             Instala los plugins recomendados para Pi (pi-subagents, web, todo, etc.)
   ${colors.green}herdr${colors.reset}                 Instala Herdr Dashboard, integraciones de agentes y skill global
   ${colors.green}upgrade, update${colors.reset}       Actualiza Pinky Core a la última versión y sincroniza los harnesses
   ${colors.green}status, list${colors.reset}          Muestra el estado de instalación de cada harness soportado

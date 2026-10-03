@@ -16,8 +16,9 @@ agents-opencode/
 │   ├── tio-bob.md       # Revisor senior de código y PRs/MRs
 │   ├── contador.md      # Estratega financiero y fiscal (España/UE)
 │   └── saul.md          # Consejero legal y regulatorio (España/UE)
-├── rules/               # Reglas por dominio (~/.config/opencode/rules/*.md)
-└── skills/              # 27 Skills bajo estándar Agent Skills (~/.config/opencode/skills/*)
+├── commands/            # Slash commands personalizados (~/.config/opencode/commands/*.md)
+├── rules/               # Reglas por dominio (~/.config/opencode/rules/*.rules.md)
+└── skills/              # Skills bajo estándar Agent Skills (~/.config/opencode/skills/*)
 ```
 
 ## Instalación
@@ -28,6 +29,7 @@ mkdir -p ~/.config/opencode
 cp agents-opencode/AGENTS.md ~/.config/opencode/AGENTS.md
 cp agents-opencode/opencode.json ~/.config/opencode/opencode.json
 cp -R agents-opencode/agents ~/.config/opencode/
+cp -R agents-opencode/commands ~/.config/opencode/
 cp -R agents-opencode/rules ~/.config/opencode/
 cp -R agents-opencode/skills ~/.config/opencode/
 ```

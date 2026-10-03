@@ -142,15 +142,17 @@ if [[ ! "$CONFIRM" =~ ^[SsYy]?$ ]] && [ -n "$CONFIRM" ]; then
   exit 0
 fi
 
-# 1. Update VERSION in bin/pinky
-if [ -f "bin/pinky" ]; then
-  printf "\n${CYAN}Actualizando versión en bin/pinky a %s...${NC}\n" "$NEW_VERSION"
-  if [[ "$OSTYPE" == "darwin"* ]]; then
-    sed -i '' "s/const VERSION = .*/const VERSION = \"$NEW_VERSION\";/" bin/pinky
-  else
-    sed -i "s/const VERSION = .*/const VERSION = \"$NEW_VERSION\";/" bin/pinky
+# 1. Update VERSION in bin/pinky and scripts/installer.mjs
+for FILE in "bin/pinky" "scripts/installer.mjs"; do
+  if [ -f "$FILE" ]; then
+    printf "\n${CYAN}Actualizando versión en %s a %s...${NC}\n" "$FILE" "$NEW_VERSION"
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+      sed -i '' "s/const VERSION = .*/const VERSION = \"$NEW_VERSION\";/" "$FILE"
+    else
+      sed -i "s/const VERSION = .*/const VERSION = \"$NEW_VERSION\";/" "$FILE"
+    fi
   fi
-fi
+done
 
 # 2. Stage and commit changes if any
 printf "${CYAN}Preparando commit de release...${NC}\n"
