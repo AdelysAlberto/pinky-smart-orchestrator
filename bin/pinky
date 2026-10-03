@@ -42,6 +42,7 @@ const HARNESSES = [
       { src: "mcp.json", dest: "mcp.json" },
       { src: "pi-settings.schema.json", dest: "pi-settings.schema.json" },
       { src: "agents", dest: "agents", isDir: true },
+      { src: "prompts", dest: "prompts", isDir: true },
       { src: "rules", dest: "rules", isDir: true },
       { src: "skills", dest: "skills", isDir: true },
     ],
