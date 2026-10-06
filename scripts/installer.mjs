@@ -841,7 +841,7 @@ async function cmdHerdr(installedList = []) {
 
   console.log(`\n${colors.cyan}[3/3] Instalando Skill de Herdr de forma global...${colors.reset}`);
   try {
-    execSync("npx -y skills add ogulcancelik/herdr --skill herdr -g", { stdio: "inherit" });
+    execSync("npx -y skills add ogulcancelik/herdr --skill herdr -g -y", { stdio: "inherit" });
     console.log(`\n${colors.green}${colors.bold}✓ Skill de Herdr instalada globalmente.${colors.reset}`);
   } catch (err) {
     console.warn(`\n${colors.yellow}Aviso: No se pudo instalar la skill automáticamente:${colors.reset}`, err.message);

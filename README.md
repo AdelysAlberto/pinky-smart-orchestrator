@@ -148,7 +148,7 @@ herdr integration install opencode  # Para OpenCode
 
 #### 3. Instalar la skill global de comunicación IPC para agentes
 ```bash
-npx skills add ogulcancelik/herdr --skill herdr -g
+npx skills add ogulcancelik/herdr --skill herdr -g -y
 ```
 
 ---
