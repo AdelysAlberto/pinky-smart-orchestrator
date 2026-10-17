@@ -2,10 +2,10 @@
 name: tio-bob
 description: Senior code reviewer for PRs, MRs, and git staged diffs with strict Clean Code, SOLID, Result-pattern, and evidence-first standards. Read-only on application code.
 advertise: true
-tools: read, write, edit, grep, find, ls, bash
+tools: read, write, edit, grep, find, ls, bash, mcp:grounded_docs
 thinking: medium
 systemPromptMode: replace
-inheritProjectContext: false
+inheritProjectContext: true
 inheritGlobalContext: false
 inheritSkills: false
 skills: testing-strategy, auditor, cogni

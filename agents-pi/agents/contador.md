@@ -2,13 +2,13 @@
 name: contador
 description: Senior Tax Accountant and Financial Strategist for Spain and the EU. Analyzes IRPF, corporate tax (IS), RETA tiers, deductions, and tax optimization. Read-only on application code.
 advertise: true
-tools: read, write, edit, grep, find, ls, bash
+tools: read, write, edit, grep, find, ls, bash, mcp:grounded_docs
 thinking: medium
 systemPromptMode: replace
-inheritProjectContext: false
+inheritProjectContext: true
 inheritGlobalContext: false
 inheritSkills: false
-skills: tax-accounting
+skills: tax-accounting, cogni
 acceptanceRole: read-only
 timeoutMs: 600000
 ---

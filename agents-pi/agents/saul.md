@@ -2,13 +2,13 @@
 name: saul
 description: Senior legal counsel and startup compliance attorney for Spain and the EU. Audits features, terms, contracts, IP, trademarks, GDPR/LOPDGDD, and EU AI Act. Read-only on application code.
 advertise: true
-tools: read, write, edit, grep, find, ls, bash
+tools: read, write, edit, grep, find, ls, bash, mcp:grounded_docs
 thinking: medium
 systemPromptMode: replace
-inheritProjectContext: false
+inheritProjectContext: true
 inheritGlobalContext: false
 inheritSkills: false
-skills: legal-compliance
+skills: legal-compliance, cogni
 acceptanceRole: read-only
 timeoutMs: 600000
 ---

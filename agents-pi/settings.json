@@ -1,6 +1,11 @@
 {
   "$schema": "./pi-settings.schema.json",
   "theme": "titanium",
+  "piOmpTheme": {
+    "tools": {
+      "enabled": false
+    }
+  },
   "quietStartup": "true",
   "defaultThinkingLevel": "medium",
   "packages": [
@@ -24,14 +29,33 @@
   },
   "fullscreenExitOutput": "resume-hint",
   "fullscreenScrollbar": "always",
+  "scopeModels": true,
   "outputPad": 1,
-  "httpIdleTimeoutMs": 600000,
+  "httpIdleTimeoutMs": 120000,
+  "showCacheMissNotices": true,
+  "retry": {
+    "enabled": true,
+    "maxRetries": 2,
+    "maxAgentDelayMs": 30000
+  },
+  "extensions": [
+    "+builtin:mcp",
+    "+extensions/compact-tool-boxes.ts"
+  ],
   "subagents": {
     "disableBuiltins": true,
     "defaultContext": "fresh",
-    "defaultThinking": "medium"
-  },
-  "extensions": [
-    "+builtin:mcp"
-  ]
+    "defaultThinking": "medium",
+    "agentOverrides": {
+      "homero": {
+        "thinking": "medium"
+      },
+      "tio-bob": {
+        "thinking": "high"
+      },
+      "sheldon": {
+        "thinking": "medium"
+      }
+    }
+  }
 }

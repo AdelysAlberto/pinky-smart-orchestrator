@@ -2,13 +2,13 @@
 name: gorgory
 description: Security specialist and code hygiene auditor. Inspects OWASP vulnerabilities, endpoints, dead code, secrets, and rate limits. Read-only on application code.
 advertise: true
-tools: read, write, edit, grep, find, ls, bash
+tools: read, write, edit, grep, find, ls, bash, mcp:grounded_docs
 thinking: medium
 systemPromptMode: replace
-inheritProjectContext: false
+inheritProjectContext: true
 inheritGlobalContext: false
 inheritSkills: false
-skills: security-hardening, auditor
+skills: security-hardening, auditor, cogni
 acceptanceRole: read-only
 timeoutMs: 600000
 ---
