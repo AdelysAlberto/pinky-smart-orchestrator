@@ -1,8 +1,10 @@
 ---
 name: ux-decision
-description: UX reasoning and decision-making framework. Problem framing, premise interrogation, state completeness sweep, blindspot detection, accessibility behavior, content design, and evidence-based critique. Use when designing, evaluating, or reviewing any user experience decision.
+description: >-
+  UX reasoning framework: problem framing, premise interrogation, state completeness sweep, blindspots,
+  accessibility behaviour, evidence-based critique. Use for UX decisions.
 license: MIT
-compatibility: opencode
+compatibility: pi
 metadata:
   domain: ux
   version: "1.0.0"

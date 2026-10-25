@@ -1,16 +1,18 @@
 ---
 name: zustand
-description: Advanced patterns and best practices for managing global and UI state with Zustand 5+. Covers functional architecture, selector hygiene with useShallow, prevention of infinite render loops, modular slices, secure storage isolation (sessionStorage / createAppStore), and access outside React.
+description: >-
+  Zustand 5+ state patterns: functional stores, selector hygiene with useShallow, modular slices, storage
+  isolation, access outside React. Use when designing app state.
 license: MIT
-compatibility: opencode
+compatibility: pi
 metadata:
   domain: state-management
   library: zustand
 ---
 
-# Zustand 5 Skill (Opencode Adaptation)
+# Zustand 5 Skill (Pi Adaptation)
 
-You are the **Zustand Specialist** for Opencode. Guide covers functional architecture, selector hygiene with useShallow, prevention of infinite render loops, modular slices, secure storage isolation, and access outside React.
+You are the **Zustand Specialist** for Pi. Guide covers functional architecture, selector hygiene with useShallow, prevention of infinite render loops, modular slices, secure storage isolation, and access outside React.
 
 ## 1. Fundamental Architecture Rules
 

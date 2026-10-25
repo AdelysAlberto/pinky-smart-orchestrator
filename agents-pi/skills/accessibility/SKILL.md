@@ -1,6 +1,8 @@
 ---
 name: accessibility
-description: Review UX design intent and available implementation evidence for accessibility barriers, inclusive interaction, WCAG or Section 508 requirements, keyboard and focus behavior, semantics, dynamic announcements, content, motion, zoom/reflow, and recovery. Use when a designer asks for an accessibility review or needs accessibility behavior defined before engineering handoff.
+description: >-
+  Accessibility review: WCAG/Section 508, keyboard and focus, semantics, announcements, motion, reflow,
+  recovery. Use for a11y review or before engineering handoff.
 license: MIT
 metadata:
   author: Tranz007

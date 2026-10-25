@@ -1,8 +1,10 @@
 ---
 name: react-native-architecture
-description: Master production React Native & Expo (2026 standards) with Expo Router, New Architecture (Fabric/TurboModules), Reanimated 3, Vertical Slicing, and Callstack performance optimizations.
+description: >-
+  Production React Native/Expo 2026: Expo Router, Fabric/TurboModules, Reanimated 3, vertical slicing. Use
+  when building or reviewing RN app code.
 license: MIT
-compatibility: opencode
+compatibility: pi
 metadata:
   domain: mobile
   framework: react-native

@@ -1,8 +1,10 @@
 ---
 name: product-requirements
-description: Product Requirements Document (PRD) creation, Product Briefs, user journey mapping, MoSCoW prioritization, and functional/non-functional specifications. Use when defining new features, scopes, or writing PRDs.
+description: >-
+  PRD and product brief authoring: user journeys, MoSCoW prioritisation, functional and non-functional specs.
+  Use when scoping a new feature.
 license: MIT
-compatibility: opencode
+compatibility: pi
 metadata:
   domain: product
   framework: prd-moscow

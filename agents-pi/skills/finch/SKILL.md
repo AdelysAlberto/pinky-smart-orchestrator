@@ -1,6 +1,8 @@
 ---
 name: finch
-description: Writes documentation, technical notes, emails, and proposals in a natural human tone. Technical but conversational. Never robotic.
+description: >-
+  Write docs, notes, emails and proposals in a natural human voice: technical, conversational, never robotic.
+  Use when prose must not read as AI-generated.
 ---
 
 # Doc Writer — Agente de Documentación Natural

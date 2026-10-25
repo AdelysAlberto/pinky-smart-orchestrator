@@ -1,8 +1,10 @@
 ---
 name: security-hardening
-description: Security hardening standards, OWASP Top 10 mitigation, API rate limiting, input sanitization, secure cookies, token handling, and frontend shielding. Use when reviewing security, authentication, or sensitive endpoints.
+description: >-
+  Hardening: OWASP Top 10, rate limiting, input sanitisation, secure cookies, token handling, frontend
+  shielding. Use when reviewing security or auth.
 license: MIT
-compatibility: opencode
+compatibility: pi
 metadata:
   domain: security
   standards: owasp

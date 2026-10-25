@@ -1,6 +1,8 @@
 ---
 name: linkedin
-description: "Generates authentic, high-impact LinkedIn engineering reflections inspired by Paul Finch (conversational, vivid storytelling) and Edna Mode (punchy, anti-bloat, zero fluff). Extracts abstract architectural lessons from recent work without reciting git changelogs or leaking product details."
+description: >-
+  Write LinkedIn engineering reflections: honest craft lessons, no changelog recitation, no product leaks.
+  Use for social posts about recent work.
 ---
 
 # /linkedin - Authentic Engineering Reflections (Finch & Edna Style)
@@ -45,6 +47,12 @@ Strictly prohibit desperate engagement hooks:
 - BANNED: *"Comparte si te ha pasado"*
 - BANNED: *"Sígueme para más reflexiones"*
 The post must stand on its own intellectual merit. If a reader comments, it should be because the engineering trade-off provoked authentic curiosity or debate.
+
+### Invariant 5: Total Anonymity & Product Isolation
+Never mention proprietary product names, company names, or internal features. Abstract everything into clean engineering concepts:
+- Instead of "Viasera navigation app" -> *"un sistema reactivo con eventos en tiempo real"*
+- Instead of "Valhalla routing engine" -> *"un motor de cálculo geoespacial de terceros"*
+- Instead of "arrival voice maneuver" -> *"un flujo de telemetría donde la semántica del proveedor invierte el orden temporal"*
 
 ---
 

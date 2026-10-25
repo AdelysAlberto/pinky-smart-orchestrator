@@ -1,8 +1,10 @@
 ---
 name: growth-copywriting
-description: High-conversion copywriting, sales persuasion frameworks (AIDA, PAS, BAB), landing page blueprints, and value proposition design. Use when writing marketing copy, landing pages, or conversion funnels.
+description: >-
+  Conversion copywriting: AIDA/PAS/BAB frameworks, landing page blueprints, value propositions, CTAs. Use for
+  marketing copy and conversion funnels.
 license: MIT
-compatibility: opencode
+compatibility: pi
 metadata:
   domain: growth
   frameworks: aida,pas,straight-line

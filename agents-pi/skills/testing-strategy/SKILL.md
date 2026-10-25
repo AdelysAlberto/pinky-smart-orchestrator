@@ -1,8 +1,10 @@
 ---
 name: testing-strategy
-description: Testing standards, unit testing for services and hooks, integration testing with MSW and React Testing Library, edge case diagnosis, and test-driven design. Use when writing tests or planning QA coverage.
+description: >-
+  Test design: unit tests for services and hooks, MSW integration tests, edge case diagnosis, TDD order. Use
+  when writing or planning tests.
 license: MIT
-compatibility: opencode
+compatibility: pi
 metadata:
   domain: testing
   frameworks: vitest,msw,rtl

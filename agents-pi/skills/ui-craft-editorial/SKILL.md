@@ -1,6 +1,8 @@
 ---
 name: ui-craft-editorial
-description: "Editorial / magazine / long-form / Medium / Substack / content-heavy UIs. Locked knobs: CRAFT=9, MOTION=4, DENSITY=3. Serif display + humanist body, wide reading column, drop caps, OpenType. Trigger on: editorial, magazine, long-form, blog, Medium-like, Substack-like."
+description: >-
+  Editorial/magazine long-form style (CRAFT 9, MOTION 4, DENSITY 3): serif display, wide reading column, drop
+  caps, OpenType. Use for articles and content-heavy UIs.
 argument-hint: "[action: build|review|polish] [target]"
 ---
 

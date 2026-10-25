@@ -1,8 +1,10 @@
 ---
 name: mobile-native
-description: iOS Human Interface Guidelines, Material Design 3, cross-platform patterns, gesture-driven interaction, safe areas, touch targets, native navigation, and battle-tested anti-patterns for React Native / Expo. Use when designing, building, or reviewing any mobile interface.
+description: >-
+  iOS HIG and Material Design 3, gesture interaction, safe areas, touch targets, native navigation for React
+  Native/Expo. Use when designing mobile UI.
 license: MIT
-compatibility: opencode
+compatibility: pi
 metadata:
   domain: mobile
   version: "1.0.0"

@@ -1,8 +1,10 @@
 ---
 name: css-architecture
-description: CSS Modules architecture, BEM methodology, design tokens (CSS variables), mobile-first responsive design, and GPU-accelerated animations. Use when styling components or structuring CSS.
+description: >-
+  CSS architecture: CSS Modules, BEM, design tokens as CSS variables, mobile-first responsive, GPU
+  animations. Use when structuring or refactoring stylesheets.
 license: MIT
-compatibility: opencode
+compatibility: pi
 metadata:
   domain: styling
   methodology: bem

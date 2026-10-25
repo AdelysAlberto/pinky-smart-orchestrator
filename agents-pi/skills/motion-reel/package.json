@@ -1,0 +1,16 @@
+{
+  "name": "viasera-motion-reel",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "15-second deterministic motion-graphics showreel for the Viasera brand",
+  "scripts": {
+    "sheet": "node render.mjs --sheet",
+    "sound": "node sound.mjs",
+    "render": "node render.mjs",
+    "build": "node sound.mjs && node render.mjs"
+  },
+  "dependencies": {
+    "puppeteer-core": "^25.12.0"
+  }
+}

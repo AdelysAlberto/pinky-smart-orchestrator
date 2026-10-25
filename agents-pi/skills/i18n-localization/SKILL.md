@@ -1,8 +1,10 @@
 ---
 name: i18n-localization
-description: Internationalization (i18n) standards, react-i18next setup, namespaced translation keys, pluralization, and RTL logical CSS properties. Use when localizing UI text or adding multi-language support.
+description: >-
+  i18n with react-i18next: namespaced keys, pluralization, RTL logical properties. Use when localizing UI
+  text or adding a language.
 license: MIT
-compatibility: opencode
+compatibility: pi
 metadata:
   domain: frontend
   tooling: react-i18next

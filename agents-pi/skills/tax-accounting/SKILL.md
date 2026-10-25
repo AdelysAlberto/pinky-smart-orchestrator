@@ -1,8 +1,10 @@
 ---
 name: tax-accounting
-description: Tax accounting, fiscal optimization, IRPF, RETA brackets, corporate income tax (IS), VAT/OSS, deductible expenses, withholding calculations, and financial strategy for freelancers, startups, and companies in Spain and the EU.
+description: >-
+  Spain/EU tax accounting: IRPF, RETA, IS, VAT/OSS, deductions, withholdings, fiscal optimisation for
+  freelancers and companies.
 license: MIT
-compatibility: opencode
+compatibility: pi
 metadata:
   domain: tax-accounting
   jurisdiction: Spain & European Union

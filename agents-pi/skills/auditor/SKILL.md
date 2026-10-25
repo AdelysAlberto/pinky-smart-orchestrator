@@ -1,8 +1,10 @@
 ---
 name: auditor
-description: Analyze projects, discover architecture, audit source code, identify patterns, anti-patterns, technical debt, business rules, and generate senior-level technical documentation.
+description: >-
+  Audit a codebase: architecture discovery, patterns and anti-patterns, technical debt, business rules,
+  senior technical documentation. Use for project audits.
 license: MIT
-compatibility: opencode
+compatibility: pi
 metadata:
   audience: architects-developers-techleads
   domain: software-architecture

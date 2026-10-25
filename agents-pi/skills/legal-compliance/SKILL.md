@@ -1,8 +1,10 @@
 ---
 name: legal-compliance
-description: Legal compliance, startup law, corporate registration, tax obligations, software licensing, copyright, trademark registration, GDPR/ePrivacy, and e-commerce regulations in Spain and the European Union.
+description: >-
+  Spain/EU startup legal: incorporation, contracts, licensing, IP/trademark, GDPR/ePrivacy, e-commerce, EU AI
+  Act. Use for legal review of features.
 license: MIT
-compatibility: opencode
+compatibility: pi
 metadata:
   domain: legal
   jurisdiction: Spain & European Union

@@ -1,8 +1,10 @@
 ---
 name: backend-architecture
-description: Backend architecture and clean workflow for Node.js, Bun, Fastify, and Express. Includes public vs private module segregation, Result Pattern HTTP handlers, structured Pino logging, and Bruno API collections.
+description: >-
+  Backend design for Node/Bun/Fastify/Express: public vs private modules, Result-pattern HTTP handlers, Pino
+  logging, Bruno collections. Use when building or reviewing APIs.
 license: MIT
-compatibility: opencode
+compatibility: pi
 metadata:
   domain: backend
   frameworks: fastify,express,bun

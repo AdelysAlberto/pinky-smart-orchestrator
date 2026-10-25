@@ -1,6 +1,8 @@
 ---
 name: ui-craft-minimal
-description: "Minimal / clean / Linear / Notion / Vercel / whitespace-heavy UIs. Locked knobs: CRAFT=8, MOTION=3, DENSITY=2. Monochrome + one accent, Inter/Geist, hairline borders over shadows. Trigger on: minimal, clean, Linear-like, Notion-like, Vercel-like, whitespace-heavy."
+description: >-
+  Minimal clean style (CRAFT 8, MOTION 3, DENSITY 2): monochrome plus one accent, Inter/Geist, hairline
+  borders. Use for Linear/Notion/Vercel-like surfaces.
 argument-hint: "[action: build|review|polish] [target]"
 ---
 

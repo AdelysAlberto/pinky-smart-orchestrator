@@ -1,8 +1,10 @@
 ---
 name: ux-wireframing
-description: UX/UI design specifications, layout wireframes, dramatic minimalism ("No capes!"), user flow mapping, and visual token hierarchies. Use when planning UI layouts, user journeys, or drafting UX specifications.
+description: >-
+  UX specifications and wireframes: layout structure, user journey mapping, token hierarchy, minimalism. Use
+  when planning a screen or drafting a design spec.
 license: MIT
-compatibility: opencode
+compatibility: pi
 metadata:
   domain: design
   methodology: wireframing

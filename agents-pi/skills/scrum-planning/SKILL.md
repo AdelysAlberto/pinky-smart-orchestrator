@@ -1,8 +1,10 @@
 ---
 name: scrum-planning
-description: Agile planning, Epics and User Story decomposition, granular 1-by-1 developer tasks, strict technical dependency ordering, and verifiable acceptance criteria. Use when organizing sprint plans or breaking down roadmaps.
+description: >-
+  Agile planning: epic and story decomposition, granular 1-by-1 tasks, strict dependency ordering, verifiable
+  acceptance criteria. Use when organising sprints.
 license: MIT
-compatibility: opencode
+compatibility: pi
 metadata:
   domain: agile
   methodology: scrum
@@ -69,5 +71,5 @@ High-level explanation of the business value and module boundary.
 
 ## Phase 4: Integration Verification
 - [ ] **Task 4.1**: Create MSW handlers in `src/modules/Orders/__tests__/orders.msw.ts`.
-- [ ] **Task 4.2**: Run full verification gate (`bun run biome:check && bun test`).
+- [ ] **Task 4.2**: Run full verification gate (`bun run biome:check && bun run typecheck`).
 ```

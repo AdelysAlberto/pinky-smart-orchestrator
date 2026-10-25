@@ -1,8 +1,10 @@
 ---
 name: market-research
-description: Market research, competitive analysis, feature parity benchmarks, user pain validation, and product positioning. Use when analyzing market opportunities, researching alternatives, or benchmarking competitors.
+description: >-
+  Market research and competitive analysis: feature parity benchmarks, user pain validation, positioning. Use
+  for opportunity or alternative analysis.
 license: MIT
-compatibility: opencode
+compatibility: pi
 metadata:
   domain: discovery
   methodology: competitor-benchmarking

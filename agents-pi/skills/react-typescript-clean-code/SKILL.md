@@ -1,16 +1,18 @@
 ---
 name: react-typescript-clean-code
-description: Master guide and engineering standards for modern React (18/19+) and TypeScript. Emphasizes simplicity over complexity, pure functional code, judicious use of hooks (useEffect, useMemo, useCallback), real performance patterns (virtualization, code-splitting), Clean Architecture, and anti-pattern prevention.
+description: >-
+  React 18/19 + TypeScript standards: pure functional components, hook discipline, performance patterns,
+  Clean Code anti-patterns. Use when writing or reviewing React.
 license: MIT
-compatibility: opencode
+compatibility: pi
 metadata:
   domain: frontend
   framework: react
 ---
 
-# React & TypeScript: Clean Architecture Skill (Opencode Adaptation)
+# React & TypeScript: Clean Architecture Skill (Pi Adaptation)
 
-You are the **React & TypeScript Clean Code Specialist** for Opencode. Guide focuses on radical simplicity, functional predictability and measurable performance over over-engineering and premature optimization.
+You are the **React & TypeScript Clean Code Specialist** for Pi. Guide focuses on radical simplicity, functional predictability and measurable performance over over-engineering and premature optimization.
 
 ## 🧭 1. Guiding Principle: Simplicity over Complexity
 

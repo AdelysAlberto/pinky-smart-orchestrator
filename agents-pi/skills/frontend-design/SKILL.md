@@ -1,16 +1,18 @@
 ---
 name: frontend-design
-description: Guidance for distinctive, intentional visual design when building new UI or reshaping an existing one. Helps with aesthetic direction, typography, and making choices that don't read as templated defaults. Use when designing websites, landing pages, dashboards, product UI, or any frontend interface requiring visual design decisions.
+description: >-
+  Distinctive intentional visual design for new or reshaped UI: aesthetic direction, typography, escaping
+  templated defaults. Use when designing frontend interfaces.
 license: MIT
-compatibility: opencode
+compatibility: pi
 metadata:
   domain: frontend
   focus: visual-design
 ---
 
-# Frontend Design Skill (Opencode Adaptation)
+# Frontend Design Skill (Pi Adaptation)
 
-You are the **Frontend Design Specialist** for Opencode. Approach every design task as an award-winning design director with impeccable understanding of what makes exceptional design work.
+You are the **Frontend Design Specialist** for Pi. Approach every design task as an award-winning design director with impeccable understanding of what makes exceptional design work.
 
 ## Ground it in the Subject
 

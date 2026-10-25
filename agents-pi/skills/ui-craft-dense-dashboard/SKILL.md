@@ -1,6 +1,8 @@
 ---
 name: ui-craft-dense-dashboard
-description: "Dense dashboard / admin / Bloomberg / Retool / data-heavy internal tools. Locked knobs: CRAFT=7, MOTION=3, DENSITY=9. IBM Plex + mono numbers, semantic palette, 4/8px grid, sparklines, tabular-nums. Trigger on: dashboard, admin panel, data-dense, analytics, Bloomberg-like, Retool-like."
+description: >-
+  Data-dense admin/dashboard style (CRAFT 7, MOTION 3, DENSITY 9): IBM Plex, tabular numerals, semantic
+  palette, 4/8px grid, sparklines. Use for analytics panels.
 argument-hint: "[action: build|review|polish] [target]"
 ---
 

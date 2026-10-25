@@ -1,6 +1,8 @@
 ---
 name: plan
-description: Interactive technical planning and architectural blueprint drafting. Produces a molecular document set (plan/<TAG>.md, artifacts/functional_specs/<TAG>.md, artifacts/design/<TAG>.md when UI is involved), each capped at 300 lines, with PENDING status, Q&A alignment loop, and Technical Analysis & Best Practices.
+description: >-
+  Interactive technical planning: molecular docs under plan/ and artifacts/ (300-line cap), PENDING status,
+  Q&A alignment loop. Use when asked for a plan or blueprint.
 ---
 
 # Interactive Technical Planning & Architecture Blueprint Skill
@@ -64,7 +66,7 @@ Mechanical ordering for the executor.
 
 ## 5. Verification Gate
 ```bash
-bun run biome:check && bun run check && bun test
+bun run biome:check && bun run typecheck
 ```
 ```
 

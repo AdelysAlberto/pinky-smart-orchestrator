@@ -1,8 +1,10 @@
 ---
 name: database-design
-description: Database architecture, relational schemas (PostgreSQL), Drizzle ORM, physical migrations, indexing strategies (B-Tree, GIN), Redis caching, and ACID transactions. Use when modeling schemas or optimizing queries.
+description: >-
+  PostgreSQL schemas, Drizzle ORM, migrations, indexing (B-Tree/GIN), Redis caching, ACID transactions. Use
+  when modelling data or optimising queries.
 license: MIT
-compatibility: opencode
+compatibility: pi
 metadata:
   domain: database
   technologies: postgresql,drizzle,redis

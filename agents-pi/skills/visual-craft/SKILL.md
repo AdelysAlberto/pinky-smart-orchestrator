@@ -1,8 +1,10 @@
 ---
 name: visual-craft
-description: Visual design craft knowledge base. Color psychology, intentional typography, concentric radii, optical alignment, shadows for elevation, GPU-only animations, scale-on-press, icon stroke matching, system-fit decisions, and anti-AI-cliche detection. Platform-agnostic. Use when designing, building, or reviewing any UI surface.
+description: >-
+  Visual craft knowledge: colour psychology, typography scale, concentric radii, optical alignment,
+  elevation, GPU-only motion, icon stroke matching. Use when reviewing UI polish.
 license: MIT
-compatibility: opencode
+compatibility: pi
 metadata:
   domain: design
   version: "1.0.0"

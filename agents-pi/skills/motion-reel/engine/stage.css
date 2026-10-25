@@ -1,0 +1,86 @@
+/* Motion Reel engine — structure only. Every colour comes from a CSS custom property
+   published by engine/palette.js, so no hex is ever hardcoded here. */
+:root{
+  --font-sans:Inter,system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{overflow:hidden;background:#000;-webkit-font-smoothing:antialiased;text-rendering:geometricPrecision}
+#viewport{position:relative;overflow:hidden;background:var(--bg);
+  font-family:var(--font-sans);color:var(--white)}
+#bg{position:absolute;inset:0;background:
+  radial-gradient(125% 95% at 50% 44%,var(--bg-lift) 0%,var(--bg) 56%,#030508 100%)}
+#blobs,#world,#punch{position:absolute;inset:0}
+#blobs{overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:0}
+#cvfx{position:absolute;inset:0}
+#punch,#world{transform-origin:50% 50%}
+#world{will-change:transform}
+
+/* ---------- generic module pieces ---------- */
+.slot{position:absolute;transform-origin:50% 50%;opacity:0}
+.slot svg{display:block;width:100%;height:auto;overflow:visible}
+
+/* kinetic type */
+.krow{display:flex;justify-content:center;align-items:flex-end;overflow:visible}
+.krow .kw{display:block;overflow:hidden;padding:0 2px}
+.krow .kw>i{display:block;font-style:normal;font-weight:800;letter-spacing:-.02em;transform:translateY(106%)}
+.ksub{text-align:center;font-family:var(--font-mono);letter-spacing:.62em;text-indent:.62em;
+  color:var(--primary);text-transform:uppercase;opacity:0}
+
+/* big single word (word-flip) */
+.wordflip{position:absolute;left:0;right:0;text-align:center;font-weight:800;opacity:0}
+
+/* telemetry metrics */
+.metric{position:relative;padding-left:26px}
+.metric:before{content:'';position:absolute;left:0;top:8px;width:3px;height:16px;background:var(--primary)}
+.metric .k{display:block;font-family:var(--font-mono);font-size:16px;letter-spacing:.26em;
+  color:var(--muted);text-transform:uppercase}
+.metric .v{font-family:var(--font-mono);font-weight:600;line-height:1.02;
+  font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+.metric .u{font-family:var(--font-mono);color:var(--primary);margin-left:10px;letter-spacing:.08em}
+.bearing .v,.bearing .u{color:var(--accent);text-align:right}
+
+/* final lockup */
+#lock{position:absolute;inset:0;opacity:0}
+.lockmark{position:absolute;left:50%;transform:translate(-50%,-50%)}
+.lockmark img{display:block;width:100%;height:100%;object-fit:contain}
+.lockshine{position:absolute;inset:0;pointer-events:none;opacity:0;
+  -webkit-mask-size:100% 100%;mask-size:100% 100%;
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  background-image:linear-gradient(103deg,transparent 44%,rgba(255,255,255,.95) 50%,transparent 56%);
+  background-size:200% 100%;background-repeat:no-repeat}
+.locktag{position:absolute;left:0;right:0;text-align:center;font-weight:400;
+  letter-spacing:.16em;color:var(--text);opacity:0}
+.lockrule{position:absolute;left:50%;height:2px;width:0;transform:translateX(-50%);
+  background:linear-gradient(90deg,transparent,var(--primary),transparent);
+  box-shadow:0 0 14px rgba(0,229,255,.55)}
+.lockcredit{position:absolute;left:0;right:0;text-align:center;font-family:var(--font-mono);
+  letter-spacing:.34em;color:var(--muted);opacity:0}
+
+/* ---------- HUD (screen space, never moves with the camera) ---------- */
+#hud{position:absolute;inset:0;font-family:var(--font-mono);pointer-events:none}
+#corners .cn{position:absolute;border:1px solid rgba(255,255,255,.42);opacity:0}
+.cn.tl{border-right:0;border-bottom:0} .cn.tr{border-left:0;border-bottom:0}
+.cn.bl{border-right:0;border-top:0} .cn.br{border-left:0;border-top:0}
+#secLabel{position:absolute;display:flex;align-items:center;font-size:15px;
+  letter-spacing:.3em;color:var(--text);opacity:0;white-space:nowrap}
+#secLabel i{display:block;background:var(--primary)}
+#secNum{color:var(--primary)}
+#tc{position:absolute;font-size:15px;letter-spacing:.22em;color:var(--muted);opacity:0;white-space:nowrap}
+#brandMini{position:absolute;text-align:right;font-size:14px;letter-spacing:.3em;
+  color:var(--text);opacity:0;white-space:nowrap}
+#brandMini i{display:block;font-style:normal;font-size:11px;letter-spacing:.34em;color:var(--muted);margin-top:7px}
+#progress{position:absolute;left:0;bottom:0;width:100%;height:2px;background:rgba(255,255,255,.06);opacity:0}
+#progressFill{width:0;height:100%;background:linear-gradient(90deg,var(--secondary),var(--primary))}
+
+/* ---------- post ---------- */
+#overlay{position:absolute;inset:0;pointer-events:none}
+#scan{position:absolute;inset:0;opacity:.018;
+  background:repeating-linear-gradient(180deg,#fff 0 1px,transparent 1px 4px)}
+#grain{position:absolute;inset:0;opacity:0;mix-blend-mode:overlay}
+#vig{position:absolute;inset:0;opacity:.85;
+  background:radial-gradient(118% 92% at 50% 48%,transparent 40%,rgba(0,0,0,.55) 100%),
+             linear-gradient(180deg,rgba(0,0,0,.5),transparent 16%,transparent 84%,rgba(0,0,0,.6))}
+#flash{position:absolute;inset:0;background:#fff;opacity:0}
+#tear{position:absolute;left:0;right:0;height:0;background:rgba(0,229,255,.5);opacity:0}
