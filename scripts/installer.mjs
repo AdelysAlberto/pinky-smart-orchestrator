@@ -742,33 +742,9 @@ function cmdUpgrade() {
     installGlobalSkills(repoRoot);
   }
 
-  // Detección y migración de Pi en upgrade
+  // Detección de Pi para sincronización
   const piHarness = HARNESSES.find((h) => h.id === "pi");
   const usesPi = isHarnessInstalled(piHarness) || checkCommandExists("pi");
-
-  if (usesPi) {
-    if (checkCommandExists("pi")) {
-      process.stdout.write(`  • Actualizando plugins y extensiones de Pi... `);
-      try {
-        execSync("pi uninstall npm:pi-open-agents", { stdio: "ignore" });
-      } catch {}
-      try {
-        execSync("pi uninstall npm:pi-mcp-adapter", { stdio: "ignore" });
-      } catch {}
-      try {
-        execSync("pi update --extensions", { stdio: "ignore" });
-      } catch {}
-      try {
-        execSync("pi update", { stdio: "ignore" });
-      } catch {}
-      try {
-        execSync("pi install npm:pi-subagents", { stdio: "pipe" });
-        console.log(`${colors.green}✓${colors.reset}`);
-      } catch {
-        console.log(`${colors.yellow}✓ (verificado)${colors.reset}`);
-      }
-    }
-  }
 
   // Re-sync all installed harnesses
   console.log(`${colors.cyan}Sincronizando harnesses instalados...${colors.reset}`);
@@ -957,8 +933,13 @@ async function cmdHerdr(installedList = []) {
 
   console.log(`\n${colors.cyan}[3/3] Instalando Skill de Herdr de forma global...${colors.reset}`);
   try {
-    execSync("npx -y skills add ogulcancelik/herdr --skill herdr -g -y", { stdio: "inherit" });
-    console.log(`\n${colors.green}${colors.bold}✓ Skill de Herdr instalada globalmente.${colors.reset}`);
+    const runner = checkCommandExists("npx") ? "npx -y" : (checkCommandExists("bunx") ? "bunx" : null);
+    if (runner) {
+      execSync(`${runner} skills add ogulcancelik/herdr --skill herdr -g -y`, { stdio: "inherit" });
+      console.log(`\n${colors.green}${colors.bold}✓ Skill de Herdr instalada globalmente.${colors.reset}`);
+    } else {
+      console.log(`  ${colors.dim}(Se requiere npx o bunx para instalar la skill de herdr; omitiendo)${colors.reset}`);
+    }
   } catch (err) {
     console.warn(`\n${colors.yellow}Aviso: No se pudo instalar la skill automáticamente:${colors.reset}`, err.message);
   }
