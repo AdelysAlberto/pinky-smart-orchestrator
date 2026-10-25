@@ -31,7 +31,7 @@ Rather than relying on single monolithic prompts, Pinky enforces strict separati
 - **Context Pollution & Drift**: Eliminates oversized prompts by lazy-loading domain rules and modular skills on demand.
 - **Architectural Deviation**: Prevents implementation agents from making unauthorized system design decisions without explicit technical blueprints.
 - **Inconsistent Quality Gates**: Establishes deterministic verification before marking any task as complete (`bun test`, `biome check`, `typecheck`).
-- **Multi-Tool Fragmentation**: Single unified bundle that installs and synchronizes configurations seamlessly across Pi, Claude Code, Cursor, Codex, OpenCode, VS Code Copilot, and Google Antigravity.
+- **Multi-Tool Fragmentation**: Single unified bundle that installs and synchronizes configurations seamlessly across Pi, Claude Code, Codex, OpenCode, and Google Antigravity.
 
 ---
 
@@ -52,10 +52,8 @@ Rather than relying on single monolithic prompts, Pinky enforces strict separati
 | :--- | :--- | :--- | :--- |
 | **Pi** | Pi Coding Agent (`pi-subagents`) | `~/.pi/agent/` | `AGENTS.md`, `settings.json` |
 | **Claude Code** | Anthropic Claude Code CLI | `~/.claude/` | `CLAUDE.md`, `settings.json` |
-| **Cursor** | Cursor IDE & Composer | `~/.cursor/` | `AGENTS.md` |
 | **OpenAI Codex** | OpenAI Codex CLI / Environment | `~/.codex/` | `AGENTS.md`, `config.toml` |
 | **OpenCode** | OpenCode Autonomous Agent | `~/.config/opencode/` | `AGENTS.md`, `opencode.json` |
-| **VS Code Copilot** | GitHub Copilot Custom Agents | `~/.copilot/` | `copilot-instructions.md` |
 | **Google Antigravity** | Antigravity IDE & Antigravity 2.0 | `~/.gemini/config/` | `GEMINI.md`, `AGENTS.md` |
 
 ---
@@ -89,7 +87,7 @@ Once installed, the `pinky` command is globally available in any terminal sessio
 | Command | Description | Example |
 | :--- | :--- | :--- |
 | `pinky` | Launches the interactive terminal menu to select and install harnesses. | `pinky` |
-| `pinky install <harness>` | Directly installs the bundle into a specific harness (`pi`, `claude`, `cursor`, `codex`, `opencode`, `copilot`, `antigravity`, `all`). | `pinky install pi` |
+| `pinky install <harness>` | Directly installs the bundle into a specific harness (`pi`, `claude`, `codex`, `opencode`, `antigravity`, `all`). | `pinky install pi` |
 | `pinky pi-addons` | Instala los paquetes y extensiones recomendadas para Pi (`pi-subagents`, `pi-web-access`, etc.). | `pinky pi-addons` |
 | `pinky herdr` | Instala el dashboard Herdr, integraciones de agentes (`pi`, `claude`, `opencode`) y la skill global. | `pinky herdr` |
 | `pinky upgrade` | Pulls the latest Pinky Core updates from GitHub and synchronizes all active harnesses. | `pinky upgrade` |
@@ -102,7 +100,7 @@ Once installed, the `pinky` command is globally available in any terminal sessio
 - **Arrow Keys (`↑` / `↓`)**: Navigate through the list of harnesses.
 - **Enter**: Confirm selection and proceed with installation.
 - **Typing text**: Instant search and filtering.
-- **Numbers (`1-8`)**: Direct selection by index.
+- **Numbers (`1-6`)**: Direct selection by index.
 - **Ctrl+C**: Cancel operation safely.
 
 ---
@@ -270,10 +268,8 @@ pinky-smart-orchestrator/
 │   └── installer.mjs           # Interactive harness selection CLI engine
 ├── agents-pi/                  # Bundle for Pi Coding Agent (pi-subagents)
 ├── agents-claude/              # Bundle for Anthropic Claude Code
-├── agents-cursor/              # Bundle for Cursor IDE & Composer
 ├── agents-codex/               # Bundle for OpenAI Codex
 ├── agents-opencode/            # Bundle for OpenCode CLI
-├── agents-copilot/             # Bundle for VS Code GitHub Copilot
 ├── agents-antigravity/         # Bundle for Google Antigravity IDE & 2.0
 ├── main/                       # Master templates for agents, rules, and skills
 └── README.md                   # Project documentation and specifications

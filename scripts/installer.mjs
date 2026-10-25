@@ -70,23 +70,6 @@ const HARNESSES = [
     ],
   },
   {
-    id: "cursor",
-    name: "Cursor IDE / Composer",
-    shortDesc: "Reglas, subagentes y skills para Cursor (~/.cursor/)",
-    sourceDir: "agents-cursor",
-    targetDir: path.join(homedir, ".cursor"),
-    files: [
-      { src: "AGENTS.md", dest: "AGENTS.md" },
-      { src: "agents", dest: "agents", isDir: true },
-      { src: "rules", dest: "rules", isDir: true },
-      { src: "skills", dest: "skills", isDir: true },
-    ],
-    postInstallNote: [
-      "Cierre completamente Cursor IDE y vuelva a abrirlo.",
-      "Para proyectos específicos también puede copiar el contenido en <proyecto>/.cursor/",
-    ],
-  },
-  {
     id: "codex",
     name: "OpenAI Codex",
     shortDesc: "Bundle de configuración y agentes para OpenAI Codex (~/.codex/)",
@@ -119,22 +102,6 @@ const HARNESSES = [
     ],
     postInstallNote: [
       "Reinicie el servicio o CLI de OpenCode para cargar los agentes y skills.",
-    ],
-  },
-  {
-    id: "copilot",
-    name: "VS Code GitHub Copilot",
-    shortDesc: "Agentes personalizados, instrucciones y skills (~/.copilot/)",
-    sourceDir: "agents-copilot",
-    targetDir: path.join(homedir, ".copilot"),
-    files: [
-      { src: "agents", dest: "agents", isDir: true },
-      { src: "instructions", dest: "instructions", isDir: true },
-      { src: "skills", dest: "skills", isDir: true },
-    ],
-    postInstallNote: [
-      "Recargue la ventana de Visual Studio Code (Developer: Reload Window).",
-      "Los subagentes e instrucciones personalizadas estarán disponibles en Chat/Edits.",
     ],
   },
   {
@@ -870,7 +837,7 @@ ${colors.bold}COMANDOS:${colors.reset}
   ${colors.green}help, -h${colors.reset}              Muestra esta ayuda
 
 ${colors.bold}HARNESSES DISPONIBLES:${colors.reset}
-  pi, claude, cursor, codex, opencode, copilot, antigravity, all
+  pi, claude, codex, opencode, antigravity, all
 
 ${colors.bold}EJEMPLOS:${colors.reset}
   pinky                      # Abre el menú interactivo
