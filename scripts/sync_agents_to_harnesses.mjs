@@ -286,42 +286,29 @@ function syncClaude(agent, parsed) {
   console.log(`✓ Claude Code: ${agent.id}.md`);
 }
 
-// 3. Generate OpenAI Codex agents
+// 3. Generate OpenAI Codex agents (.toml)
 function syncCodex(agent, parsed) {
   const targetDir = path.join(repoRoot, "agents-codex", "agents");
   fs.mkdirSync(targetDir, { recursive: true });
 
-  const targetPath = path.join(targetDir, `${agent.id}.md`);
-  const lines = [
-    "---",
-    `name: ${agent.name}`,
-    `description: ${parsed.description}`,
-    "mode: all",
-    `color: "${agent.claude.color}"`,
-    `thinking: ${agent.claude.thinking}`,
-    "systemPrompt: replace",
-  ];
+  const targetPath = path.join(targetDir, `${agent.id}.toml`);
+  const escapedDesc = parsed.description.replace(/"/g, '\\"');
 
-  if (agent.claude.allowedAgents) {
-    lines.push("allowedAgents:");
-    for (const a of agent.claude.allowedAgents) {
-      lines.push(`  - ${a}`);
-    }
-  }
+  const content = [
+    `name = "${agent.name}"`,
+    `description = "${escapedDesc}"`,
+    `developer_instructions = """`,
+    `## Codex execution boundaries`,
+    ``,
+    `You are a custom Codex subagent. Work only on the delegated task and return concise findings, evidence, paths, and blockers to the parent. You inherit the parent session’s tools, sandbox, approvals, provider, and MCP servers; your instructions cannot grant additional permissions or make the sandbox read-only. Do not assume unavailable CLIs, MCPs, or dispatch APIs exist. Load only relevant skills from \`~/.codex/skills/\` and follow their current instructions.`,
+    ``,
+    parsed.body,
+    `"""`,
+    ``,
+  ].join("\n");
 
-  lines.push("permission:");
-  lines.push('  "*": allow');
-  if (agent.claude.readOnly) {
-    lines.push('  "edit":');
-    lines.push('    "*": deny');
-  }
-
-  lines.push(`skills: ${agent.claude.skills}`);
-  lines.push("---");
-  lines.push("");
-
-  fs.writeFileSync(targetPath, `${lines.join("\n")}${parsed.body}\n`, "utf-8");
-  console.log(`✓ OpenAI Codex: ${agent.id}.md`);
+  fs.writeFileSync(targetPath, content, "utf-8");
+  console.log(`✓ OpenAI Codex: ${agent.id}.toml`);
 }
 
 // 4. Generate OpenCode agents
