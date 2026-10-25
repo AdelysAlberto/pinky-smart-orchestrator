@@ -194,10 +194,77 @@ function countFiles(dir) {
   return count;
 }
 
-// Check if a harness is installed
+// Check if a harness is installed and active in the system
 function isHarnessInstalled(harness) {
-  if (harness.id === "all") return false;
-  return fs.existsSync(harness.targetDir);
+  if (!harness || harness.id === "all") return false;
+
+  switch (harness.id) {
+    case "pi": {
+      // Pi is installed if CLI exists in PATH or target directory contains configuration files
+      if (checkCommandExists("pi")) return true;
+      if (!fs.existsSync(PI_AGENT_DIR)) return false;
+      return (
+        fs.existsSync(path.join(PI_AGENT_DIR, "settings.json")) ||
+        fs.existsSync(path.join(PI_AGENT_DIR, "AGENTS.md")) ||
+        fs.existsSync(path.join(PI_AGENT_DIR, "models.json")) ||
+        fs.existsSync(path.join(PI_AGENT_DIR, "extensions"))
+      );
+    }
+    case "claude": {
+      // Claude Code is installed if CLI exists or target directory contains core config files
+      const claudeDir = path.join(homedir, ".claude");
+      if (!fs.existsSync(claudeDir)) return false;
+      if (checkCommandExists("claude")) return true;
+      return (
+        fs.existsSync(path.join(claudeDir, "CLAUDE.md")) ||
+        fs.existsSync(path.join(claudeDir, "config.json")) ||
+        fs.existsSync(path.join(claudeDir, "settings.json")) ||
+        fs.existsSync(path.join(claudeDir, "agents")) ||
+        fs.existsSync(path.join(claudeDir, "rules"))
+      );
+    }
+    case "codex": {
+      // OpenAI Codex is installed if CLI exists or target directory contains config files
+      const codexDir = path.join(homedir, ".codex");
+      if (!fs.existsSync(codexDir)) return false;
+      if (checkCommandExists("codex")) return true;
+      return (
+        fs.existsSync(path.join(codexDir, "config.toml")) ||
+        fs.existsSync(path.join(codexDir, "AGENTS.md")) ||
+        fs.existsSync(path.join(codexDir, "agents")) ||
+        fs.existsSync(path.join(codexDir, "rules"))
+      );
+    }
+    case "opencode": {
+      // OpenCode is installed if CLI exists or target directory contains OpenCode config
+      const opencodeDir = path.join(homedir, ".config", "opencode");
+      if (!fs.existsSync(opencodeDir)) return false;
+      if (checkCommandExists("opencode")) return true;
+      return (
+        fs.existsSync(path.join(opencodeDir, "opencode.json")) ||
+        fs.existsSync(path.join(opencodeDir, "AGENTS.md")) ||
+        fs.existsSync(path.join(opencodeDir, "agents")) ||
+        fs.existsSync(path.join(opencodeDir, "rules")) ||
+        fs.existsSync(path.join(opencodeDir, "commands"))
+      );
+    }
+    case "antigravity": {
+      // Google Antigravity is installed if CLI exists or ~/.gemini contains Antigravity config
+      const geminiDir = path.join(homedir, ".gemini");
+      if (!fs.existsSync(geminiDir)) return false;
+      if (checkCommandExists("antigravity") || checkCommandExists("agy")) return true;
+      return (
+        fs.existsSync(path.join(geminiDir, "GEMINI.md")) ||
+        fs.existsSync(path.join(geminiDir, "config", "AGENTS.md")) ||
+        fs.existsSync(path.join(geminiDir, "config", "agents")) ||
+        fs.existsSync(path.join(geminiDir, "config", "rules")) ||
+        fs.existsSync(path.join(geminiDir, "antigravity-cli"))
+      );
+    }
+    default: {
+      return harness.targetDir ? fs.existsSync(harness.targetDir) : false;
+    }
+  }
 }
 
 // Install / sync global engineering policies into ~/.agents/policies/
@@ -732,38 +799,41 @@ function cmdUpgrade() {
     }
   }
 
-  // Sincronizar siempre policies globales en upgrade
-  console.log(`\n${colors.cyan}Sincronizando policies globales (~/.agents/policies/)...${colors.reset}`);
-  installGlobalPolicies(repoRoot);
+  // Sincronizar policies globales ÚNICAMENTE si ~/.agents/policies/ ya existía
+  const policiesDir = path.join(GLOBAL_AGENTS_DIR, "policies");
+  if (fs.existsSync(policiesDir)) {
+    console.log(`\n${colors.cyan}Sincronizando policies globales (~/.agents/policies/)...${colors.reset}`);
+    installGlobalPolicies(repoRoot);
+  }
 
-  // Sincronizar skills si ya estaban presentes en ~/.agents/skills/
-  if (fs.existsSync(path.join(GLOBAL_AGENTS_DIR, "skills"))) {
-    console.log(`${colors.cyan}Sincronizando skills globales (~/.agents/skills/)...${colors.reset}`);
+  // Sincronizar skills globales ÚNICAMENTE si ~/.agents/skills/ ya existía
+  const skillsDir = path.join(GLOBAL_AGENTS_DIR, "skills");
+  if (fs.existsSync(skillsDir)) {
+    console.log(`\n${colors.cyan}Sincronizando skills globales (~/.agents/skills/)...${colors.reset}`);
     installGlobalSkills(repoRoot);
   }
 
-  // Detección de Pi para sincronización
-  const piHarness = HARNESSES.find((h) => h.id === "pi");
-  const usesPi = isHarnessInstalled(piHarness) || checkCommandExists("pi");
-
-  // Re-sync all installed harnesses
-  console.log(`${colors.cyan}Sincronizando harnesses instalados...${colors.reset}`);
+  // Re-sync ÚNICAMENTE harnesses detectados como instalados
+  console.log(`\n${colors.cyan}Sincronizando harnesses instalados...${colors.reset}`);
   let updatedCount = 0;
   for (const h of HARNESSES) {
     if (h.id === "all") continue;
-    if (isHarnessInstalled(h) || (h.id === "pi" && usesPi)) {
+    if (isHarnessInstalled(h)) {
       installHarness(h, repoRoot);
       updatedCount++;
     }
   }
 
-  // Asegurar Cogni en upgrade
-  ensureCogniInstalled();
+  // Actualizar Cogni semántico SOLO si ya estaba presente en el sistema
+  if (checkCogniInstalled()) {
+    ensureCogniInstalled();
+  }
 
   if (updatedCount === 0) {
-    console.log(`${colors.yellow}No se detectaron harnesses previamente instalados. Ejecuten 'pinky install' para configurar uno.${colors.reset}\n`);
+    console.log(`  ${colors.yellow}No se detectaron harnesses previamente instalados.${colors.reset}`);
+    console.log(`  ${colors.dim}Para instalar Pinky en un harness (Pi, Claude, OpenCode, Antigravity, Codex), ejecute:${colors.reset} ${colors.bold}pinky install${colors.reset}\n`);
   } else {
-    console.log(`\n${colors.green}${colors.bold}✓ ${updatedCount} harnesses actualizados y sincronizados satisfactoriamente.${colors.reset}\n`);
+    console.log(`\n${colors.green}${colors.bold}✓ ${updatedCount} harness(es) actualizado(s) y sincronizado(s) satisfactoriamente.${colors.reset}\n`);
   }
 }
 
@@ -895,9 +965,9 @@ async function cmdHerdr(installedList = []) {
   }
 
   console.log(`${colors.cyan}[2/3] Configurando integraciones de agentes...${colors.reset}`);
-  const hasPi = installedList.some((h) => h.id === "pi" || h.id === "all") || checkCommandExists("pi");
-  const hasClaude = installedList.some((h) => h.id === "claude" || h.id === "all") || checkCommandExists("claude");
-  const hasOpenCode = installedList.some((h) => h.id === "opencode" || h.id === "all") || checkCommandExists("opencode");
+  const hasPi = installedList.some((h) => h.id === "pi" || h.id === "all") || isHarnessInstalled(HARNESSES.find((h) => h.id === "pi"));
+  const hasClaude = installedList.some((h) => h.id === "claude" || h.id === "all") || isHarnessInstalled(HARNESSES.find((h) => h.id === "claude"));
+  const hasOpenCode = installedList.some((h) => h.id === "opencode" || h.id === "all") || isHarnessInstalled(HARNESSES.find((h) => h.id === "opencode"));
 
   const runHerdr = (cmd) => {
     try {
