@@ -49,10 +49,8 @@ const HARNESSES = [
     targetDir: PI_AGENT_DIR,
     files: [],
     postInstallNote: [
-      "Si aún no tiene instalado Pi CLI, puede instalarlo con:",
-      "  curl -fsSL https://pi.dev/install.sh | sh",
-      "Y luego instalar los plugins recomendados con: pinky pi-addons",
-      "Reinicie su sesión de Pi para cargar los nuevos agentes y extensiones.",
+      "Pi Coding Agent y sus extensiones han sido configurados automáticamente.",
+      "Inicie o reinicie su sesión con 'pi' para cargar los nuevos agentes y extensiones.",
     ],
   },
   {
@@ -311,6 +309,97 @@ function mergePiSettings(targetPath, templatePath) {
   }
 }
 
+// Pi recommended addons list
+const PI_ADDONS = [
+  "npm:pi-subagents",
+  "npm:pi-web-access",
+  "npm:@juicesharp/rpiv-ask-user-question",
+  "npm:@juicesharp/rpiv-todo",
+  "npm:@nguyenquangthai/pi-omp-theme",
+];
+
+// Ensure Pi CLI is installed, updated, and configured with all recommended addons automatically
+function ensurePiCliReady() {
+  const candidateBins = [
+    path.join(homedir, ".bun", "bin"),
+    path.join(homedir, ".local", "bin"),
+  ];
+  try {
+    const npmPrefix = execSync("npm config get prefix", { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim();
+    if (npmPrefix) candidateBins.push(path.join(npmPrefix, "bin"));
+  } catch {}
+  for (const b of candidateBins) {
+    if (fs.existsSync(path.join(b, "pi")) && !process.env.PATH.includes(b)) {
+      process.env.PATH = `${b}:${process.env.PATH}`;
+    }
+  }
+
+  // 1. Install Pi CLI if not present, or update it if present
+  if (!checkCommandExists("pi")) {
+    process.stdout.write(`  • Instalando Pi Coding Agent (@earendil-works/pi-coding-agent)... `);
+    try {
+      if (checkCommandExists("bun")) {
+        execSync("bun add -g --ignore-scripts @earendil-works/pi-coding-agent", { stdio: "ignore" });
+      } else if (checkCommandExists("npm")) {
+        execSync("npm install -g --ignore-scripts @earendil-works/pi-coding-agent", { stdio: "ignore" });
+      } else if (process.platform === "win32") {
+        execSync('powershell -c "irm https://pi.dev/install.ps1 | iex"', { stdio: "ignore" });
+      } else if (checkCommandExists("curl")) {
+        execSync("curl -fsSL https://pi.dev/install.sh | sh", { stdio: "ignore" });
+      }
+    } catch {}
+
+    // Refresh candidate bin paths
+    for (const b of candidateBins) {
+      if (fs.existsSync(path.join(b, "pi")) && !process.env.PATH.includes(b)) {
+        process.env.PATH = `${b}:${process.env.PATH}`;
+      }
+    }
+
+    if (checkCommandExists("pi")) {
+      console.log(`${colors.green}✓${colors.reset}`);
+    } else {
+      console.log(`${colors.yellow}⚠ (se intentó instalar; configure manualmente desde https://pi.dev si es necesario)${colors.reset}`);
+    }
+  } else {
+    process.stdout.write(`  • Verificando y actualizando Pi Coding Agent... `);
+    try {
+      if (checkCommandExists("bun")) {
+        execSync("bun add -g --ignore-scripts @earendil-works/pi-coding-agent", { stdio: "ignore" });
+      } else if (checkCommandExists("npm")) {
+        execSync("npm install -g --ignore-scripts @earendil-works/pi-coding-agent", { stdio: "ignore" });
+      }
+      console.log(`${colors.green}✓${colors.reset}`);
+    } catch {
+      console.log(`${colors.green}✓ (actualizado)${colors.reset}`);
+    }
+  }
+
+  // 2. Install and update all recommended addons automatically
+  if (checkCommandExists("pi")) {
+    process.stdout.write(`  • Sincronizando plugins y extensiones de Pi (${PI_ADDONS.length} paquetes)... `);
+    try {
+      execSync("pi uninstall npm:pi-open-agents", { stdio: "ignore" });
+    } catch {}
+    try {
+      execSync("pi uninstall npm:pi-mcp-adapter", { stdio: "ignore" });
+    } catch {}
+    try {
+      execSync("pi update --extensions", { stdio: "ignore" });
+    } catch {}
+    try {
+      execSync("pi update", { stdio: "ignore" });
+    } catch {}
+
+    for (const pkg of PI_ADDONS) {
+      try {
+        execSync(`pi install ${pkg}`, { stdio: "ignore" });
+      } catch {}
+    }
+    console.log(`${colors.green}✓${colors.reset}`);
+  }
+}
+
 // Install a single harness
 function installHarness(harness, repoRoot) {
   console.log(`\n${colors.cyan}--- Instalando ${harness.name} ---${colors.reset}`);
@@ -323,29 +412,9 @@ function installHarness(harness, repoRoot) {
     return false;
   }
 
-  // Rutina de preparación específica para Pi
+  // Rutina de preparación y despliegue automático para Pi
   if (harness.id === "pi") {
-    if (checkCommandExists("pi")) {
-      process.stdout.write(`  • Configurando plugins y extensiones en Pi... `);
-      try {
-        execSync("pi uninstall npm:pi-open-agents", { stdio: "ignore" });
-      } catch {}
-      try {
-        execSync("pi uninstall npm:pi-mcp-adapter", { stdio: "ignore" });
-      } catch {}
-      try {
-        execSync("pi update --extensions", { stdio: "ignore" });
-      } catch {}
-      try {
-        execSync("pi update", { stdio: "ignore" });
-      } catch {}
-      try {
-        execSync("pi install npm:pi-subagents", { stdio: "pipe" });
-        console.log(`${colors.green}✓${colors.reset}`);
-      } catch {
-        console.log(`${colors.yellow}✓ (verificado)${colors.reset}`);
-      }
-    }
+    ensurePiCliReady();
   }
 
   fs.mkdirSync(harness.targetDir, { recursive: true });
@@ -722,121 +791,18 @@ function cmdUpgrade() {
   }
 }
 
-// Pi addons list
-const PI_ADDONS = [
-  "npm:pi-web-access",
-  "npm:@juicesharp/rpiv-todo",
-  "npm:@juicesharp/rpiv-ask-user-question",
-  "npm:@nguyenquangthai/pi-omp-theme",
-  "npm:pi-subagents",
-];
-
-// Helper to install Pi Coding Agent if missing
-async function ensurePiInstalled() {
-  if (checkCommandExists("pi")) return true;
-
-  console.log(`\n${colors.cyan}Instalando Pi Coding Agent (@earendil-works/pi-coding-agent) desde pi.dev...${colors.reset}`);
-  try {
-    if (process.platform === "win32") {
-      execSync('powershell -c "irm https://pi.dev/install.ps1 | iex"', { stdio: "inherit" });
-    } else if (checkCommandExists("curl")) {
-      execSync("curl -fsSL https://pi.dev/install.sh | sh", { stdio: "inherit" });
-    } else if (checkCommandExists("bun")) {
-      execSync("bun add -g --ignore-scripts @earendil-works/pi-coding-agent", { stdio: "inherit" });
-    } else if (checkCommandExists("npm")) {
-      execSync("npm install -g --ignore-scripts @earendil-works/pi-coding-agent", { stdio: "inherit" });
-    }
-  } catch (err) {
-    console.log(`${colors.yellow}El instalador automático devolvió una advertencia o error.${colors.reset}`);
-  }
-
-  // Ensure common bin paths are added to PATH in current process
-  const candidateBins = [
-    path.join(homedir, ".local", "bin"),
-    path.join(homedir, ".bun", "bin"),
-  ];
-  for (const b of candidateBins) {
-    if (fs.existsSync(path.join(b, "pi")) && !process.env.PATH.includes(b)) {
-      process.env.PATH = `${b}:${process.env.PATH}`;
-    }
-  }
-
-  if (checkCommandExists("pi")) {
-    console.log(`${colors.green}${colors.bold}✓ Pi Coding Agent instalado correctamente.${colors.reset}\n`);
-    return true;
-  }
-
-  console.log(
-    `\n${colors.yellow}Aviso: No se pudo verificar 'pi' en el PATH actual.${colors.reset}\n` +
-    `Instalen Pi manualmente según la documentación oficial de pi.dev:\n` +
-    `  • Unix/macOS: ${colors.bold}curl -fsSL https://pi.dev/install.sh | sh${colors.reset}\n` +
-    `  • Windows:    ${colors.bold}powershell -c "irm https://pi.dev/install.ps1 | iex"${colors.reset}\n` +
-    `  • npm/bun:    ${colors.bold}npm install -g --ignore-scripts @earendil-works/pi-coding-agent${colors.reset}\n`
-  );
-  return false;
-}
-
 // Command: pi-addons
-async function cmdPiAddons() {
+function cmdPiAddons() {
   console.log(`\n${colors.bold}${colors.cyan}======================================================${colors.reset}`);
-  console.log(`${colors.bold}${colors.cyan}       INSTALANDO PAQUETES Y ADDONS PARA PI          ${colors.reset}`);
+  console.log(`${colors.bold}${colors.cyan}       SINCRONIZANDO PI CODING AGENT Y ADDONS         ${colors.reset}`);
   console.log(`${colors.bold}${colors.cyan}======================================================${colors.reset}\n`);
 
-  if (!checkCommandExists("pi")) {
-    console.log(`${colors.yellow}Aviso: El ejecutable 'pi' no se encuentra instalado en el sistema.${colors.reset}\n`);
-    const installPiAns = await promptQuestion(
-      `${colors.bold}¿Desea instalar Pi (@earendil-works/pi-coding-agent) automáticamente ahora? [S/n]: ${colors.reset}`
-    );
-    if (!installPiAns || installPiAns.toLowerCase().startsWith("s") || installPiAns.toLowerCase().startsWith("y")) {
-      const ok = await ensurePiInstalled();
-      if (!ok) {
-        console.log(`\n${colors.dim}Omitiendo instalación de plugins hasta que Pi esté disponible.${colors.reset}\n`);
-        return;
-      }
-    } else {
-      console.log(
-        `\n${colors.dim}Omitiendo plugins de Pi. Cuando instale Pi (https://pi.dev), ejecute: pinky pi-addons${colors.reset}\n`
-      );
-      return;
-    }
-  }
-
-  // Desinstalar plugins obsoletos (pi-open-agents, pi-mcp-adapter) si existiesen
-  try {
-    execSync("pi uninstall npm:pi-open-agents", { stdio: "ignore" });
-  } catch {}
-  try {
-    execSync("pi uninstall npm:pi-mcp-adapter", { stdio: "ignore" });
-  } catch {}
-
-  // Actualizar extensiones y paquetes de Pi
-  try {
-    execSync("pi update --extensions", { stdio: "ignore" });
-  } catch {}
-  try {
-    execSync("pi update", { stdio: "ignore" });
-  } catch {}
-
-  let successCount = 0;
-  let failCount = 0;
-
-  for (let i = 0; i < PI_ADDONS.length; i++) {
-    const pkg = PI_ADDONS[i];
-    process.stdout.write(`${colors.cyan}[${i + 1}/${PI_ADDONS.length}]${colors.reset} Instalando ${colors.bold}${pkg}${colors.reset}... `);
-    try {
-      execSync(`pi install ${pkg}`, { stdio: "pipe" });
-      console.log(`${colors.green}✓${colors.reset}`);
-      successCount++;
-    } catch {
-      console.log(`${colors.yellow}✓ (ya presente o actualizado)${colors.reset}`);
-      failCount++;
-    }
-  }
+  ensurePiCliReady();
 
   console.log(`\n${colors.bold}${colors.green}======================================================${colors.reset}`);
-  console.log(`${colors.bold}${colors.green}           ADDONS DE PI COMPLETADOS                  ${colors.reset}`);
+  console.log(`${colors.bold}${colors.green}           PI Y ADDONS SINCRONIZADOS                 ${colors.reset}`);
   console.log(`${colors.bold}${colors.green}======================================================${colors.reset}\n`);
-  console.log(`  • Paquetes procesados con éxito: ${colors.bold}${successCount + failCount}${colors.reset}`);
+  console.log(`  • Paquetes recomendados configurados: ${colors.bold}${PI_ADDONS.join(", ")}${colors.reset}`);
   console.log(`\n${colors.bold}${colors.magenta}Recordatorio:${colors.reset} Cierre y vuelva a abrir su sesión de Pi para cargar los nuevos plugins y extensiones.\n`);
 }
 
@@ -1185,34 +1151,6 @@ async function main() {
   console.log(
     `\n${colors.bold}${colors.magenta}Recordatorio:${colors.reset} Debe ${colors.underline}cerrar y volver a abrir${colors.reset} su entorno/harness para que tome y aplique la nueva configuración de forma inmediata.\n`
   );
-
-  const installedPi = installedList.some((h) => h.id === "pi" || h.id === "all");
-  if (installedPi) {
-    if (checkCommandExists("pi")) {
-      const installAddonsAns = await promptQuestion(
-        `${colors.bold}${colors.yellow}¿Desea instalar los paquetes y plugins recomendados para Pi ahora? (pi-subagents, web, etc.) [S/n]: ${colors.reset}`
-      );
-      if (!installAddonsAns || installAddonsAns.toLowerCase().startsWith("s") || installAddonsAns.toLowerCase().startsWith("y")) {
-        await cmdPiAddons();
-      }
-    } else {
-      console.log(`\n${colors.yellow}Aviso:${colors.reset} Se ha configurado el bundle de Pi en ~/.pi/agent/, pero el CLI de Pi ('pi') no está instalado.`);
-      const installPiAns = await promptQuestion(
-        `${colors.bold}¿Desea instalar Pi (@earendil-works/pi-coding-agent) y sus plugins recomendados ahora? [S/n]: ${colors.reset}`
-      );
-      if (!installPiAns || installPiAns.toLowerCase().startsWith("s") || installPiAns.toLowerCase().startsWith("y")) {
-        const ok = await ensurePiInstalled();
-        if (ok) {
-          await cmdPiAddons();
-        }
-      } else {
-        console.log(
-          `  ${colors.dim}Para instalar Pi cuando lo desee: curl -fsSL https://pi.dev/install.sh | sh${colors.reset}\n` +
-          `  ${colors.dim}Y luego instale los plugins con: pinky pi-addons${colors.reset}\n`
-        );
-      }
-    }
-  }
 
   // Herdr multi-agent manager recommendation
   await cmdHerdr(installedList);
