@@ -1,4 +1,4 @@
-# Pi — Universal Engineering Kernel
+# Universal Engineering Kernel
 
 > Harness-global instructions for every project on this machine. Project-specific rules are **not**
 > here: each repository declares them in its own `AGENTS.md`, loaded by directory. If a rule below

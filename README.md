@@ -40,21 +40,38 @@ Rather than relying on single monolithic prompts, Pinky enforces strict separati
 - **Interactive Scrollable CLI**: Terminal UI supporting arrow-key navigation (`↑`/`↓`), real-time search filtering, and single/multi-harness installation.
 - **Cross-Platform Native Support**: Automated setup and persistent `$PATH` configuration for macOS, Linux, WSL, and native Windows (PowerShell/CMD).
 - **Zero-Dependency Runtime**: Built with native ESM modules requiring no prior `npm install` steps.
-- **7 Specialized Agent Roles**: Clear division of responsabilidades between strategic planning, construction, visual craft, security, and quality gates.
-- **27 Modular Agent Skills**: Standardized `SKILL.md` packages covering databases, modern frontend, mobile native, styling, testing, and legal compliance.
+- **8 Specialized Agent Roles**: Clear division of responsabilidades between strategic planning, construction, visual craft, security, and quality gates.
+- **57+ Modular Agent Skills**: Standardized `SKILL.md` packages covering architecture, databases, modern frontend, mobile native, styling, testing, and legal compliance.
 - **Semantic Release Automation**: Built-in script (`release.sh`) for automated `patch`, `minor`, and `major` tag releases and GitHub publishing.
 
 ---
 
-## Supported Harnesses
+## Supported Harnesses & Global Resources
 
-| Harness | Platform / Environment | Target Directory | Primary Config File |
+Pinky uses a dual-layer architecture: a **global cross-harness layer** (`~/.agents/`) for shared engineering policies and modular skills, alongside **harness-specific configurations** for agent routing and tool adapters.
+
+### Cross-Harness Global Directory (`~/.agents/`)
+
+| Resource | Target Directory | Description | Installed By |
 | :--- | :--- | :--- | :--- |
-| **Pi** | Pi Coding Agent (`pi-subagents`) | `~/.pi/agent/` | `AGENTS.md`, `settings.json` |
-| **Claude Code** | Anthropic Claude Code CLI | `~/.claude/` | `CLAUDE.md`, `settings.json` |
-| **OpenAI Codex** | OpenAI Codex CLI / Environment | `~/.codex/` | `AGENTS.md`, `config.toml` |
-| **OpenCode** | OpenCode Autonomous Agent | `~/.config/opencode/` | `AGENTS.md`, `opencode.json` |
-| **Google Antigravity** | Antigravity IDE & Antigravity 2.0 | `~/.gemini/config/` | `GEMINI.md`, `AGENTS.md` |
+| **Engineering Policies** | `~/.agents/policies/` | Invariants, verification gates, frontend, backend & mobile rules. | **Default** (Always installed, replaces existing) |
+| **Agent Skills** | `~/.agents/skills/` | 57+ modular skills under the cross-tool Agent Skills standard. | **Interactive Prompt** (Optional [S/n], recognized by all harnesses) |
+
+> **Ubicación en cada sistema operativo:**
+> - **macOS / Linux**: `$HOME/.agents/` (`/Users/<user>/.agents` o `/home/<user>/.agents`)
+> - **Windows**: `%USERPROFILE%\.agents` (ej. `C:\Users\<user>\.agents`)
+
+### Supported Harness Environments
+
+| Harness | Platform / Environment | Target Directory | Primary Files |
+| :--- | :--- | :--- | :--- |
+| **Pi** | Pi Coding Agent (`pi-subagents`) | `~/.pi/agent/` | `AGENTS.md`, `APPEND_SYSTEM.md`, `settings.json`, `mcp.json`, `agents/`, `extensions/`, `prompts/` |
+| **Claude Code** | Anthropic Claude Code CLI | `~/.claude/` | `CLAUDE.md`, `settings.json`, `agents/`, `rules/` |
+| **OpenAI Codex** | OpenAI Codex CLI / Environment | `~/.codex/` | `AGENTS.md`, `config.toml`, `agents/`, `rules/` |
+| **OpenCode** | OpenCode Autonomous Agent | `~/.config/opencode/` | `AGENTS.md`, `opencode.json`, `agents/`, `rules/`, `commands/` |
+| **Google Antigravity** | Antigravity IDE & Antigravity 2.0 | `~/.gemini/config/` | `GEMINI.md`, `config/AGENTS.md`, `config/agents/`, `config/rules/` |
+
+> **Nota para Pi en Windows:** En sistemas Windows, la carpeta de configuración global de Pi se ubica en `%USERPROFILE%\.pi\agent\` (ej. `C:\Users\<user>\.pi\agent`). Pinky detecta y normaliza esta ruta automáticamente. Los skills de Pi se reconocen de forma nativa desde `~/.agents/skills/`.
 
 ---
 
@@ -151,13 +168,106 @@ npx skills add ogulcancelik/herdr --skill herdr -g -y
 
 ---
 
+## VCD: Vertical-Contract Design
+
+**A Lean, High-Discipline Agentic Architecture Pattern for Production Engineering**
+
+*Macro-Vision via Single PRD, Just-In-Time Vertical Slicing, Compiler-Enforced Contracts, and Parallel Read-Only Auditing.*
+
+### 1. Contexto Humano: Por Qué Nace VCD
+
+El desarrollo asistido por agentes de inteligencia artificial comenzó imitando los peores vicios de la ingeniería de software clásica: el **Waterfall Documental**. Al implementar SDD (*Spec-Driven Development*) tradicional, obligamos a los agentes a escribir especificaciones exhaustivas de cientos o miles de líneas en Markdown antes de tocar una sola línea de código.
+
+El resultado práctico fue demoledor:
+- **Quema masiva de tokens**: Agentes arquitectos redactando interfaces de TypeScript y esquemas dentro de archivos `.md`, para que luego otro agente consumiera miles de tokens leyéndolos y transcribiéndolos a `.ts`.
+- **Context Rot & Drift**: Contratos en Markdown que alucinaban librerías o desfasaban de la realidad del repositorio apenas se ejecutaba el segundo sprint.
+- **Burocracia de archivos huérfanos**: Decenas de documentos intermedios (`plan/`, `specs/`, `design/`, `reviews/`) compitiendo como fuentes de la verdad frente al código real.
+- **Sesgo del autor**: Agentes constructores que auditaban su propio código y se aprobaban a sí mismos malas decisiones de maquetación, antipatrones de capas o fallos de seguridad.
+
+Por otro lado, propuestas como ODD (*Organic Driven Design*) o el Backlog Simple liberaron agilidad al grito de *"Keep small work small"*, pero en proyectos medianos o grandes dejaron vacíos de gobernanza: falta de contratos firmes, duplicación de layouts y pérdida de trazabilidad.
+
+**VCD (Vertical-Contract Design)** nace para resolver esta tensión: conserva el rigor inflexible de la arquitectura limpia y la tipificación estricta, pero elimina la burocracia documental mediante rebanadas verticales entregadas Just-In-Time, donde el compilador valida gratis y la documentación se mantiene mínima, viva y trazable.
+
+### 2. Definición Técnica del Patrón VCD
+
+Vertical-Contract Design (VCD) es un patrón de diseño agéntico estructurado sobre cuatro pilares fundamentales:
+
+```text
+                      ┌────────────────────────────────────────┐
+                      │     artifacts/prd/PROJECT_PRD.md       │
+                      │  (Macro-Vision & Master Backlog Table) │
+                      └──────────────────┬─────────────────────┘
+                                         │
+                        [Just-In-Time Vertical Slicing]
+                                         │
+                                         ▼
+                      ┌────────────────────────────────────────┐
+                      │  artifacts/backlog/<mod>/US-XX.md      │
+                      │   (≤ 200 LOC: AC + Contract + Tasks)   │
+                      └──────────────────┬─────────────────────┘
+                                         │
+                                         ▼
+                      ┌────────────────────────────────────────┐
+                      │      Task 1: Code-First Contract       │
+                      │   (types/api/*.types.ts + typecheck)   │
+                      └──────────────────┬─────────────────────┘
+                                         │
+                         [Fast Static Checks: biome + tsc]
+                                         │
+                                         ▼
+             ┌───────────────────────────┴───────────────────────────┐
+             │         Parallel Read-Only Audit Triad/Quartet        │
+             │   (@tio-bob: Arch | @frink: Perf | @gorgory: Sec)     │
+             │        (+ @edna: UX/UI if touches_ui: true)           │
+             └───────────────────────────┬───────────────────────────┘
+                                         │
+                                [All APPROVED]
+                                         │
+                                         ▼
+                      ┌────────────────────────────────────────┐
+                      │         Single Final Test Gate         │
+                      │     (bun test run ONCE at closure)     │
+                      └──────────────────┬─────────────────────┘
+                                         │
+                                         ▼
+                      ┌────────────────────────────────────────┐
+                      │       status: done (PRD & Story)       │
+                      └────────────────────────────────────────┘
+```
+
+#### Los Cuatro Pilares de VCD:
+
+1. **Macro-Visión vs. Ejecución Micro (Just-In-Time)**:
+   - **1 Solo Documento Macro (`artifacts/prd/PROJECT_PRD.md`)**: Contiene la visión del sistema, el stack tecnológico aprobado, las fronteras de dominio y la tabla índice viva de todas las historias de usuario.
+   - **Micro-Historias de Rebanada Vertical (`artifacts/backlog/<modulo>/US-<ID>-<slug>.md`)**: Creadas Just-In-Time justo antes de construirse. Tamaño estricto ≤ 200 líneas de Markdown. Contienen criterios de aceptación observables, interfaz del contrato, y tareas atómicas.
+
+2. **Contratos Validados por el Compilador (Code-First Contracts)**:
+   - La **Tarea 1** de cada historia SIEMPRE es el contrato de código real (`types/api/*.types.ts` o interfaz en el lenguaje destino).
+   - El compilador (`tsc`, `biome check`, linters nativos) es el validador primario e implacable a coste cero de tokens. No se escriben contratos duplicados en Markdown.
+
+3. **Tríada / Cuarteto de Auditoría Paralela de Solo Lectura**:
+   - Los constructores nunca auditan su propio código.
+   - Una vez finalizada la construcción por `@homero`, se ejecutan en paralelo agentes especializados de solo lectura:
+     - `@tio-bob`: Arquitectura, Clean Code, Result Pattern, límites de capas y complejidad cognitiva.
+     - `@frink`: Rendimiento en runtime (Push State Down, prevención de cascadas de re-renders, virtualización, hooks de TanStack Query, latencia de base de datos y N+1).
+     - `@gorgory`: Seguridad y código muerto (OWASP, exposición de secretos, sanitización de inputs, rate limiting).
+     - `@edna`: Artesanía visual y UX/UI (si `touches_ui: true`: tokens, jerarquía visual, feedback háptico/estados, accesibilidad).
+   - Todos los auditores deben emitir veredicto `APPROVED` antes de que la historia pueda cerrarse.
+
+4. **Único Gate Final Determinista**:
+   - La suite de pruebas de ejecución (`bun test`, tests de integración) se corre UNA sola vez al cierre de la historia, asegurando feedback rápido estático durante el ciclo y prueba funcional definitiva al final.
+   - Actualización del estado a `done` tanto en la historia como en la tabla viva del PRD.
+
+---
+
 ## Specialized Agents Lineup
 
 | Agent | Role | Responsibility | Mode |
 | :--- | :--- | :--- | :--- |
-| `@sheldon` | Chief Architect & Orchestrator | System design, SDD specifications, DDL data schemas, API contracts, root-cause investigation, and execution plans (`plan/<TAG>.md`). | Read-only |
+| `@sheldon` | Chief Architect & PM | Macro-vision discovery, Master PRD (`artifacts/prd/PROJECT_PRD.md`), JIT Vertical Slices (`artifacts/backlog/<mod>/US-XX.md`), and parallel audit orchestration. | Read-only |
 | `@homero` | Tactical Builder & Craftsman | Implementation of application code, component construction, bug fixes, refactors, and test suites. | Read-Write |
 | `@edna` | Lead UX/UI Designer | Interaction flows, design tokens, visual architecture, mobile ergonomics, and CSS design systems (`artifacts/ux/`). | Read-Write |
+| `@frink` | Performance Scientist & Telemetry Auditor | React/RN render cascades, Push-State-Down, TanStack Query cache/loading states, DB latency, EXPLAIN, indexes, and N+1 audits. | Read-only |
 | `@gorgory` | Security & Code Hygiene Auditor | OWASP vulnerability scans, orphan endpoint discovery, secret exposure audits, and dead code mitigation (`artifacts/security/`). | Read-only |
 | `@tio-bob` | Senior Code Reviewer | Clean Code quality gates, architectural invariant verification, PR/MR inspection, and merge safety validation. | Read-only |
 | `@contador` | Tax & Financial Strategist | Tax structuring, IRPF, VAT/IVA, corporate taxes, and cross-border financial rules for Spain and the European Union. | Read-only |
@@ -266,13 +376,23 @@ pinky-smart-orchestrator/
 │   └── pinky.ps1               # Windows PowerShell execution wrapper
 ├── scripts/
 │   └── installer.mjs           # Interactive harness selection CLI engine
-├── agents-pi/                  # Bundle for Pi Coding Agent (pi-subagents)
-├── agents-claude/              # Bundle for Anthropic Claude Code
-├── agents-codex/               # Bundle for OpenAI Codex
-├── agents-opencode/            # Bundle for OpenCode CLI
-├── agents-antigravity/         # Bundle for Google Antigravity IDE & 2.0
-├── main/                       # Master templates for agents, rules, and skills
-└── README.md                   # Project documentation and specifications
+├── agents-globals/             # Recursos globales cross-harness (~/.agents/)
+│   ├── policies/               # Invariantes y reglas de ingeniería (instalación por defecto)
+│   └── skills/                 # Catálogo de 57+ Agent Skills (instalación interactiva)
+├── agents-pi/                  # Suite completa para Pi Coding Agent (~/.pi/agent/)
+│   ├── AGENTS.md               # Directivas globales de Pi
+│   ├── APPEND_SYSTEM.md        # Operating contract adjunto al prompt de Pi
+│   ├── settings.json           # Configuración global y subagentes
+│   ├── mcp.json                # Servidores MCP nativos
+│   ├── agents/                 # Subagentes especializados (@sheldon, @homero, etc.)
+│   ├── extensions/             # Extensiones TypeScript de Pi
+│   └── prompts/                # Plantillas y comandos /prompts
+├── agents-claude/              # Bundle para Anthropic Claude Code (~/.claude/)
+├── agents-codex/               # Bundle para OpenAI Codex (~/.codex/)
+├── agents-opencode/            # Bundle para OpenCode CLI (~/.config/opencode/)
+├── agents-antigravity/         # Bundle para Google Antigravity IDE & 2.0 (~/.gemini/)
+├── main/                       # Master templates y documentación técnica
+└── README.md                   # Documentación general y especificaciones
 ```
 
 ---

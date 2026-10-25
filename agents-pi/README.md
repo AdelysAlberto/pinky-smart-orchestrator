@@ -15,9 +15,9 @@ Este paquete configura el entorno de **Pi** (`~/.pi/agent/`) para operar como un
 ```text
 agents-pi/
 ├── AGENTS.md                  # Protocolo de enrutamiento y delegación para Pi
+├── APPEND_SYSTEM.md           # Operating Contract global adjunto al system prompt de Pi
 ├── settings.json              # Configuración global de Pi optimizada para subagentes
 ├── mcp.json                   # Servidores MCP nativos (Cogni Semantic Memory)
-├── pi-settings.schema.json    # JSON Schema para validación de settings.json
 ├── agents/                    # Definiciones de roles de agente (.md con frontmatter)
 │   ├── sheldon.md             # Arquitecto jefe y orquestador (SDD / Plan)
 │   ├── homero.md              # Constructor e implementador táctico
@@ -26,17 +26,11 @@ agents-pi/
 │   ├── tio-bob.md             # Revisor senior de código y PRs/MRs
 │   ├── contador.md            # Estratega financiero y fiscal (España/UE)
 │   └── saul.md                # Consejero legal y regulatorio (España/UE)
-├── rules/                     # Reglas universales de ingeniería
-│   ├── engineering-invariants.md
-│   ├── runtime.md
-│   ├── frontend.md
-│   ├── backend.md
-│   ├── react-native.md
-│   ├── verification-checklist.md
-│   └── commits.md
-├── prompts/                   # 27 Plantillas y comandos de prompt de Pi (~/.pi/agent/prompts/*.md)
-└── skills/                    # 34 Skills modulares bajo estándar Agent Skills
+├── extensions/                # Extensiones locales para Pi (compact-tool-boxes, etc.)
+└── prompts/                   # Plantillas y comandos de prompt de Pi (~/.pi/agent/prompts/*.md)
 ```
+
+> **Nota:** Las policies y skills han sido unificadas en `agents-globals/` y se instalan en `~/.agents/` (`~/.agents/policies/` y `~/.agents/skills/`), donde Pi y cualquier otro harness los detectan de forma nativa e interoperable.
 
 ---
 

@@ -5,6 +5,7 @@ import path from "node:path";
 import os from "node:os";
 import readline from "node:readline";
 import { execSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 
 const VERSION = "2.0.9";
 const REPO_URL = "https://github.com/AdelysAlberto/pinky-smart-orchestrator.git";
@@ -25,31 +26,32 @@ const colors = {
   white: "\x1b[37m",
 };
 
-const homedir = os.homedir();
-const PINKY_HOME = path.join(homedir, ".pinky");
+// Cross-platform home resolution: supports macOS, Linux, WSL, and native Windows
+function getHomedir() {
+  if (process.platform === "win32") {
+    return process.env.USERPROFILE || os.homedir();
+  }
+  return os.homedir() || process.env.HOME || "";
+}
+
+const homedir = getHomedir();
+const PINKY_HOME = path.resolve(homedir, ".pinky");
+const GLOBAL_AGENTS_DIR = path.resolve(homedir, ".agents");
+const PI_AGENT_DIR = path.resolve(homedir, ".pi", "agent");
 
 // Harness definitions
 const HARNESSES = [
   {
     id: "pi",
     name: "Pi (pi code)",
-    shortDesc: "Agentes, skills y reglas para Pi Coding Agent (~/.pi/agent/)",
+    shortDesc: "Agentes, extensiones y directivas para Pi Coding Agent (~/.pi/agent/)",
     sourceDir: "agents-pi",
-    targetDir: path.join(homedir, ".pi", "agent"),
-    files: [
-      { src: "AGENTS.md", dest: "AGENTS.md" },
-      { src: "settings.json", dest: "settings.json" },
-      { src: "mcp.json", dest: "mcp.json" },
-      { src: "pi-settings.schema.json", dest: "pi-settings.schema.json" },
-      { src: "agents", dest: "agents", isDir: true },
-      { src: "prompts", dest: "prompts", isDir: true },
-      { src: "rules", dest: "rules", isDir: true },
-      { src: "skills", dest: "skills", isDir: true },
-    ],
+    targetDir: PI_AGENT_DIR,
+    files: [],
     postInstallNote: [
       "Si aún no lo tiene instalado, instale el plugin de Pi:",
       "  pi install npm:pi-subagents",
-      "Reinicie su sesión de Pi para cargar los nuevos agentes y skills.",
+      "Reinicie su sesión de Pi para cargar los nuevos agentes y extensiones.",
     ],
   },
   {
@@ -140,6 +142,7 @@ function copyDirSync(src, dest) {
   fs.mkdirSync(dest, { recursive: true });
   const entries = fs.readdirSync(src, { withFileTypes: true });
   for (const entry of entries) {
+    if (entry.name === ".DS_Store") continue;
     const srcPath = path.join(src, entry.name);
     const destPath = path.join(dest, entry.name);
     if (entry.isDirectory()) {
@@ -156,6 +159,7 @@ function countFiles(dir) {
   if (!fs.existsSync(dir)) return 0;
   const entries = fs.readdirSync(dir, { withFileTypes: true });
   for (const entry of entries) {
+    if (entry.name === ".DS_Store") continue;
     const fullPath = path.join(dir, entry.name);
     if (entry.isDirectory()) {
       count += countFiles(fullPath);
@@ -170,6 +174,59 @@ function countFiles(dir) {
 function isHarnessInstalled(harness) {
   if (harness.id === "all") return false;
   return fs.existsSync(harness.targetDir);
+}
+
+// Install / sync global engineering policies into ~/.agents/policies/
+function installGlobalPolicies(repoRoot) {
+  const policiesSrc = path.join(repoRoot, "agents-globals", "policies");
+  const policiesDest = path.join(GLOBAL_AGENTS_DIR, "policies");
+
+  if (!fs.existsSync(policiesSrc)) {
+    console.warn(
+      `${colors.yellow}Aviso: No se encontró el directorio de policies en ${policiesSrc}${colors.reset}`
+    );
+    return false;
+  }
+
+  fs.mkdirSync(policiesDest, { recursive: true });
+  copyDirSync(policiesSrc, policiesDest);
+  const total = countFiles(policiesSrc);
+
+  console.log(
+    `${colors.green}✓ Policies globales instaladas en:${colors.reset} ${colors.bold}${policiesDest}${colors.reset}`
+  );
+  console.log(
+    `${colors.dim}  Directivas y reglas de ingeniería sincronizadas: ${total} archivos${colors.reset}`
+  );
+  return true;
+}
+
+// Install / sync global modular skills into ~/.agents/skills/
+function installGlobalSkills(repoRoot) {
+  const skillsSrc = path.join(repoRoot, "agents-globals", "skills");
+  const skillsDest = path.join(GLOBAL_AGENTS_DIR, "skills");
+
+  if (!fs.existsSync(skillsSrc)) {
+    console.warn(
+      `${colors.yellow}Aviso: No se encontró el directorio de skills en ${skillsSrc}${colors.reset}`
+    );
+    return false;
+  }
+
+  fs.mkdirSync(skillsDest, { recursive: true });
+  copyDirSync(skillsSrc, skillsDest);
+  const skillCount = fs.readdirSync(skillsSrc, { withFileTypes: true }).filter(
+    (entry) => entry.isDirectory() && entry.name !== ".DS_Store"
+  ).length;
+  const totalFiles = countFiles(skillsSrc);
+
+  console.log(
+    `${colors.green}✓ Agent Skills globales instalados en:${colors.reset} ${colors.bold}${skillsDest}${colors.reset}`
+  );
+  console.log(
+    `${colors.dim}  Total de skills sincronizados: ${skillCount} (${totalFiles} archivos desplegados)${colors.reset}`
+  );
+  return true;
 }
 
 // Merge Pi settings.json preserving user models, providers, and custom configurations
@@ -268,28 +325,47 @@ function installHarness(harness, repoRoot) {
   fs.mkdirSync(harness.targetDir, { recursive: true });
 
   let copiedFiles = 0;
-  for (const item of harness.files) {
-    const srcPath = path.join(harnessSrc, item.src);
-    const destPath = path.join(harness.targetDir, item.dest);
+  if (harness.id === "pi") {
+    // Si selecciona Pi, se copia todo el contenido de agents-pi dentro de ~/.pi/agent/
+    const entries = fs.readdirSync(harnessSrc, { withFileTypes: true });
+    for (const entry of entries) {
+      if (entry.name === ".DS_Store") continue;
+      const srcPath = path.join(harnessSrc, entry.name);
+      const destPath = path.join(harness.targetDir, entry.name);
 
-    if (!fs.existsSync(srcPath)) {
-      console.warn(
-        `${colors.yellow}Aviso: Archivo o carpeta no encontrada: ${item.src}${colors.reset}`
-      );
-      continue;
-    }
-
-    if (item.isDir) {
-      copyDirSync(srcPath, destPath);
-      copiedFiles += countFiles(srcPath);
-    } else {
-      fs.mkdirSync(path.dirname(destPath), { recursive: true });
-      if (harness.id === "pi" && item.dest === "settings.json") {
-        mergePiSettings(destPath, srcPath);
+      if (entry.isDirectory()) {
+        copyDirSync(srcPath, destPath);
+        copiedFiles += countFiles(srcPath);
       } else {
-        fs.copyFileSync(srcPath, destPath);
+        fs.mkdirSync(path.dirname(destPath), { recursive: true });
+        if (entry.name === "settings.json") {
+          mergePiSettings(destPath, srcPath);
+        } else {
+          fs.copyFileSync(srcPath, destPath);
+        }
+        copiedFiles += 1;
       }
-      copiedFiles += 1;
+    }
+  } else {
+    for (const item of harness.files) {
+      const srcPath = path.join(harnessSrc, item.src);
+      const destPath = path.join(harness.targetDir, item.dest);
+
+      if (!fs.existsSync(srcPath)) {
+        console.warn(
+          `${colors.yellow}Aviso: Archivo o carpeta no encontrada: ${item.src}${colors.reset}`
+        );
+        continue;
+      }
+
+      if (item.isDir) {
+        copyDirSync(srcPath, destPath);
+        copiedFiles += countFiles(srcPath);
+      } else {
+        fs.mkdirSync(path.dirname(destPath), { recursive: true });
+        fs.copyFileSync(srcPath, destPath);
+        copiedFiles += 1;
+      }
     }
   }
 
@@ -474,7 +550,8 @@ async function showInteractiveMenu(repoRoot) {
 
 // Find repository root
 function getRepoRoot() {
-  const scriptDir = path.resolve(path.join(path.dirname(new URL(import.meta.url).pathname), ".."));
+  const currentFilePath = fileURLToPath(import.meta.url);
+  const scriptDir = path.resolve(path.dirname(currentFilePath), "..");
   if (fs.existsSync(path.join(scriptDir, "agents-pi"))) {
     return scriptDir;
   }
@@ -489,7 +566,23 @@ function getRepoRoot() {
 
 // Command: status / list
 function cmdStatus() {
-  console.log(`\n${colors.bold}${colors.cyan}Pinky Smart Orchestrator - Estado de Harnesses:${colors.reset}\n`);
+  console.log(`\n${colors.bold}${colors.cyan}Pinky Smart Orchestrator - Estado de Harnesses y Recursos Globales:${colors.reset}\n`);
+
+  const policiesPath = path.join(GLOBAL_AGENTS_DIR, "policies");
+  const skillsPath = path.join(GLOBAL_AGENTS_DIR, "skills");
+  const policiesInstalled = fs.existsSync(policiesPath);
+  const skillsInstalled = fs.existsSync(skillsPath);
+
+  console.log(`  ${colors.bold}Recursos Globales Cross-Harness (~/.agents/):${colors.reset}`);
+  console.log(
+    `  • ${"Policies Globales".padEnd(28)} : ${policiesInstalled ? `${colors.green}${colors.bold}INSTALADO${colors.reset} (${policiesPath})` : `${colors.dim}NO INSTALADO${colors.reset}`}`
+  );
+  console.log(
+    `  • ${"Agent Skills Globales".padEnd(28)} : ${skillsInstalled ? `${colors.green}${colors.bold}INSTALADO${colors.reset} (${skillsPath})` : `${colors.dim}NO INSTALADO${colors.reset}`}`
+  );
+  console.log("");
+
+  console.log(`  ${colors.bold}Harnesses Específicos:${colors.reset}`);
   for (const h of HARNESSES) {
     if (h.id === "all") continue;
     const installed = isHarnessInstalled(h);
@@ -542,6 +635,16 @@ function cmdUpgrade() {
     } catch (err) {
       console.error(`${colors.red}Error al descargar actualización:${colors.reset}`, err.message);
     }
+  }
+
+  // Sincronizar siempre policies globales en upgrade
+  console.log(`\n${colors.cyan}Sincronizando policies globales (~/.agents/policies/)...${colors.reset}`);
+  installGlobalPolicies(repoRoot);
+
+  // Sincronizar skills si ya estaban presentes en ~/.agents/skills/
+  if (fs.existsSync(path.join(GLOBAL_AGENTS_DIR, "skills"))) {
+    console.log(`${colors.cyan}Sincronizando skills globales (~/.agents/skills/)...${colors.reset}`);
+    installGlobalSkills(repoRoot);
   }
 
   // Detección y migración de Pi en upgrade
@@ -924,6 +1027,26 @@ async function main() {
     `${colors.bold}${colors.cyan}======================================================${colors.reset}`
   );
 
+  // 1. Sincronizar siempre policies globales en ~/.agents/policies/ (default obligatorio)
+  console.log(`\n${colors.cyan}[1/3] Sincronizando Policies Globales (~/.agents/policies/)...${colors.reset}`);
+  installGlobalPolicies(repoRoot);
+
+  // 2. Preguntar al usuario si desea copiar los skills en ~/.agents/skills/
+  console.log(`\n${colors.cyan}[2/3] Verificando Agent Skills Globales (~/.agents/skills/)...${colors.reset}`);
+  const installSkillsAns = await promptQuestion(
+    `\n${colors.bold}${colors.yellow}¿Desea copiar los Agent Skills en ~/.agents/skills/?${colors.reset}\n` +
+    `  ${colors.dim}(Ubicación estándar ~/.agents/ para que cualquier harness como Pi, Claude Code, Codex, OpenCode o Antigravity los reconozca)${colors.reset} [S/n]: `
+  );
+
+  let skillsCopied = false;
+  if (!installSkillsAns || installSkillsAns.toLowerCase().startsWith("s") || installSkillsAns.toLowerCase().startsWith("y")) {
+    skillsCopied = installGlobalSkills(repoRoot);
+  } else {
+    console.log(`  ${colors.dim}Omitiendo copia de skills globales en ~/.agents/skills/${colors.reset}`);
+  }
+
+  // 3. Desplegar el harness seleccionado
+  console.log(`\n${colors.cyan}[3/3] Desplegando harness seleccionado...${colors.reset}`);
   const installedList = [];
 
   if (selectedHarness.id === "all") {
@@ -953,13 +1076,19 @@ async function main() {
 
   console.log(`\n${colors.bold}Resumen de componentes instalados:${colors.reset}`);
   console.log(
-    `  • ${colors.cyan}7 Agentes Especializados${colors.reset} (@sheldon, @homero, @edna, @gorgory, @tio-bob, @contador, @saul)`
+    `  • ${colors.cyan}Policies Globales de Ingeniería${colors.reset} en ${colors.bold}${path.join(GLOBAL_AGENTS_DIR, "policies")}${colors.reset}`
   );
+  if (skillsCopied || fs.existsSync(path.join(GLOBAL_AGENTS_DIR, "skills"))) {
+    const skillsPath = path.join(GLOBAL_AGENTS_DIR, "skills");
+    const skillCount = fs.existsSync(skillsPath)
+      ? fs.readdirSync(skillsPath, { withFileTypes: true }).filter((d) => d.isDirectory() && d.name !== ".DS_Store").length
+      : 0;
+    console.log(
+      `  • ${colors.cyan}${skillCount} Agent Skills Modulares${colors.reset} en ${colors.bold}${skillsPath}${colors.reset}`
+    );
+  }
   console.log(
-    `  • ${colors.cyan}8 Reglas Universales de Ingeniería${colors.reset} (engineering-invariants, runtime, frontend, backend, react-native, verification-checklist, commits)`
-  );
-  console.log(
-    `  • ${colors.cyan}27 Skills Modulares${colors.reset} bajo el estándar Agent Skills`
+    `  • ${colors.cyan}8 Agentes Especializados${colors.reset} (@sheldon, @homero, @edna, @gorgory, @tio-bob, @frink, @contador, @saul)`
   );
 
   console.log(
