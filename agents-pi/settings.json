@@ -1,12 +1,12 @@
 {
-  "$schema": "./pi-settings.schema.json",
+  "$schema": "https://pi.dev/schemas/settings.schema.json",
   "theme": "titanium",
   "piOmpTheme": {
     "tools": {
       "enabled": false
     }
   },
-  "quietStartup": "true",
+  "quietStartup": true,
   "defaultThinkingLevel": "medium",
   "packages": [
     "npm:pi-web-access",
