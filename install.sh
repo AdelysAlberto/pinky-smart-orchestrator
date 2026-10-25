@@ -152,6 +152,17 @@ EOF
 
 chmod +x "$BIN_DIR/pinky"
 
+# On Linux systems, GNU coreutils installs /usr/bin/pinky (finger utility).
+# Installing into /usr/local/bin/pinky ensures Pinky Smart Orchestrator takes precedence
+# and is immediately accessible in $PATH across all shells without requiring a reload.
+if [ -w "/usr/local/bin" ]; then
+  mkdir -p "/usr/local/bin" 2>/dev/null || true
+  cp "$BIN_DIR/pinky" "/usr/local/bin/pinky" 2>/dev/null && chmod +x "/usr/local/bin/pinky" 2>/dev/null || true
+elif command -v sudo >/dev/null 2>&1 && sudo -n true 2>/dev/null; then
+  sudo mkdir -p "/usr/local/bin" 2>/dev/null || true
+  sudo cp "$BIN_DIR/pinky" "/usr/local/bin/pinky" 2>/dev/null && sudo chmod +x "/usr/local/bin/pinky" 2>/dev/null || true
+fi
+
 # Also deploy Windows cmd & ps1 wrappers if available (for Git Bash / MSYS2 on Windows)
 if [ -f "$PINKY_DIR/bin/pinky.cmd" ]; then
   cp "$PINKY_DIR/bin/pinky.cmd" "$BIN_DIR/pinky.cmd" 2>/dev/null || true
