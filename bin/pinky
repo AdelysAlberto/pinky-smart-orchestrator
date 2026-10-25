@@ -7,7 +7,7 @@ import readline from "node:readline";
 import { execSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
-const VERSION = "2.1.2";
+const VERSION = "2.1.3";
 const REPO_URL = "https://github.com/AdelysAlberto/pinky-smart-orchestrator.git";
 
 // ANSI Color codes and styles
