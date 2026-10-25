@@ -47,7 +47,7 @@ if [ -n "$SCRIPT_DIR" ] && [ -d "$SCRIPT_DIR/agents-pi" ] && [ -f "$SCRIPT_DIR/b
   # Local execution: sync current repo into ~/.pinky
   printf "${CYAN}${BOLD}Sincronizando Pinky Smart Orchestrator en ~/.pinky...${NC}\n"
   if command -v rsync >/dev/null 2>&1; then
-    rsync -a --exclude=".git" "$SCRIPT_DIR/" "$PINKY_DIR/"
+    rsync -a --exclude=".git" --exclude="node_modules" --exclude=".DS_Store" "$SCRIPT_DIR/" "$PINKY_DIR/"
   else
     cp -R "$SCRIPT_DIR/"* "$PINKY_DIR/"
   fi
@@ -92,6 +92,26 @@ if [ -z "$RUNTIME_BIN" ]; then
 
   if [[ "$INSTALL_BUN_REPLY" =~ ^[SsYy]?$ ]] || [ -z "$INSTALL_BUN_REPLY" ]; then
     printf "\n${CYAN}Instalando Bun...${NC}\n"
+    # Ensure unzip is available (strictly required by the bun.sh installer)
+    if ! command -v unzip >/dev/null 2>&1; then
+      printf "${DIM}Instalando dependencia previa requerida ('unzip')...${NC}\n"
+      if command -v apt-get >/dev/null 2>&1; then
+        if [ "$(id -u)" -eq 0 ]; then
+          apt-get update -qq >/dev/null 2>&1 && apt-get install -y -qq unzip >/dev/null 2>&1 || true
+        elif command -v sudo >/dev/null 2>&1; then
+          sudo apt-get update -qq >/dev/null 2>&1 && sudo apt-get install -y -qq unzip >/dev/null 2>&1 || true
+        fi
+      elif command -v apk >/dev/null 2>&1; then
+        apk add --no-cache unzip >/dev/null 2>&1 || true
+      elif command -v dnf >/dev/null 2>&1; then
+        dnf install -y unzip >/dev/null 2>&1 || true
+      elif command -v yum >/dev/null 2>&1; then
+        yum install -y unzip >/dev/null 2>&1 || true
+      elif command -v pacman >/dev/null 2>&1; then
+        pacman -Sy --noconfirm unzip >/dev/null 2>&1 || true
+      fi
+    fi
+
     if curl -fsSL https://bun.sh/install | bash; then
       export BUN_INSTALL="$HOME/.bun"
       export PATH="$BUN_INSTALL/bin:$PATH"

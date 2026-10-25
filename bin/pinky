@@ -142,10 +142,23 @@ function copyDirSync(src, dest) {
   fs.mkdirSync(dest, { recursive: true });
   const entries = fs.readdirSync(src, { withFileTypes: true });
   for (const entry of entries) {
-    if (entry.name === ".DS_Store") continue;
+    if (entry.name === ".DS_Store" || entry.name === "node_modules" || entry.name === ".git") continue;
     const srcPath = path.join(src, entry.name);
     const destPath = path.join(dest, entry.name);
-    if (entry.isDirectory()) {
+
+    if (entry.isSymbolicLink()) {
+      if (!fs.existsSync(srcPath)) continue;
+      try {
+        const stat = fs.statSync(srcPath);
+        if (stat.isDirectory()) {
+          copyDirSync(srcPath, destPath);
+        } else {
+          fs.copyFileSync(srcPath, destPath);
+        }
+      } catch {
+        continue;
+      }
+    } else if (entry.isDirectory()) {
       copyDirSync(srcPath, destPath);
     } else {
       fs.copyFileSync(srcPath, destPath);
@@ -159,9 +172,21 @@ function countFiles(dir) {
   if (!fs.existsSync(dir)) return 0;
   const entries = fs.readdirSync(dir, { withFileTypes: true });
   for (const entry of entries) {
-    if (entry.name === ".DS_Store") continue;
+    if (entry.name === ".DS_Store" || entry.name === "node_modules" || entry.name === ".git") continue;
     const fullPath = path.join(dir, entry.name);
-    if (entry.isDirectory()) {
+    if (entry.isSymbolicLink()) {
+      if (!fs.existsSync(fullPath)) continue;
+      try {
+        const stat = fs.statSync(fullPath);
+        if (stat.isDirectory()) {
+          count += countFiles(fullPath);
+        } else {
+          count += 1;
+        }
+      } catch {
+        continue;
+      }
+    } else if (entry.isDirectory()) {
       count += countFiles(fullPath);
     } else {
       count += 1;
