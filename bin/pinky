@@ -7,7 +7,7 @@ import readline from "node:readline";
 import { execSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
-const VERSION = "2.1.3";
+const VERSION = "2.2.0";
 const REPO_URL = "https://github.com/AdelysAlberto/pinky-smart-orchestrator.git";
 
 // ANSI Color codes and styles
@@ -320,6 +320,45 @@ function installGlobalSkills(repoRoot) {
   return true;
 }
 
+// Install / sync global CLI tools and verification scripts into ~/.agents/bin/
+function installGlobalBin(repoRoot) {
+  const binSrc = path.join(repoRoot, "agents-globals", "bin");
+  const binDest = path.join(GLOBAL_AGENTS_DIR, "bin");
+
+  if (!fs.existsSync(binSrc)) {
+    console.warn(
+      `${colors.yellow}Aviso: No se encontró el directorio de utilidades globales en ${binSrc}${colors.reset}`
+    );
+    return false;
+  }
+
+  fs.mkdirSync(binDest, { recursive: true });
+  copyDirSync(binSrc, binDest);
+
+  // Ensure scripts have execution permissions
+  try {
+    const entries = fs.readdirSync(binDest);
+    for (const entry of entries) {
+      const fullPath = path.join(binDest, entry);
+      if (fs.statSync(fullPath).isFile()) {
+        fs.chmodSync(fullPath, 0o755);
+      }
+    }
+  } catch {
+    // Non-fatal on platforms without POSIX permissions
+  }
+
+  const total = countFiles(binSrc);
+
+  console.log(
+    `${colors.green}✓ Scripts y utilidades globales instaladas en:${colors.reset} ${colors.bold}${binDest}${colors.reset}`
+  );
+  console.log(
+    `${colors.dim}  Herramientas de verificación y snapshot sincronizadas: ${total} archivos${colors.reset}`
+  );
+  return true;
+}
+
 // Merge Pi settings.json preserving user models, providers, and custom configurations
 function mergePiSettings(targetPath, templatePath) {
   try {
@@ -482,6 +521,7 @@ function installHarness(harness, repoRoot) {
   // Rutina de preparación y despliegue automático para Pi
   if (harness.id === "pi") {
     ensurePiCliReady();
+    installGlobalBin(repoRoot);
   }
 
   fs.mkdirSync(harness.targetDir, { recursive: true });
@@ -731,13 +771,18 @@ function cmdStatus() {
   console.log(`\n${colors.bold}${colors.cyan}Pinky Smart Orchestrator - Estado de Harnesses y Recursos Globales:${colors.reset}\n`);
 
   const policiesPath = path.join(GLOBAL_AGENTS_DIR, "policies");
+  const binPath = path.join(GLOBAL_AGENTS_DIR, "bin");
   const skillsPath = path.join(GLOBAL_AGENTS_DIR, "skills");
   const policiesInstalled = fs.existsSync(policiesPath);
+  const binInstalled = fs.existsSync(binPath);
   const skillsInstalled = fs.existsSync(skillsPath);
 
   console.log(`  ${colors.bold}Recursos Globales Cross-Harness (~/.agents/):${colors.reset}`);
   console.log(
     `  • ${"Policies Globales".padEnd(28)} : ${policiesInstalled ? `${colors.green}${colors.bold}INSTALADO${colors.reset} (${policiesPath})` : `${colors.dim}NO INSTALADO${colors.reset}`}`
+  );
+  console.log(
+    `  • ${"Utilidades Globales (bin)".padEnd(28)} : ${binInstalled ? `${colors.green}${colors.bold}INSTALADO${colors.reset} (${binPath})` : `${colors.dim}NO INSTALADO${colors.reset}`}`
   );
   console.log(
     `  • ${"Agent Skills Globales".padEnd(28)} : ${skillsInstalled ? `${colors.green}${colors.bold}INSTALADO${colors.reset} (${skillsPath})` : `${colors.dim}NO INSTALADO${colors.reset}`}`
@@ -804,6 +849,13 @@ function cmdUpgrade() {
   if (fs.existsSync(policiesDir)) {
     console.log(`\n${colors.cyan}Sincronizando policies globales (~/.agents/policies/)...${colors.reset}`);
     installGlobalPolicies(repoRoot);
+  }
+
+  // Sincronizar utilidades globales (~/.agents/bin/) si existen o si agents-globals/bin existe
+  const binDir = path.join(GLOBAL_AGENTS_DIR, "bin");
+  if (fs.existsSync(binDir) || fs.existsSync(path.join(repoRoot, "agents-globals", "bin"))) {
+    console.log(`\n${colors.cyan}Sincronizando utilidades globales (~/.agents/bin/)...${colors.reset}`);
+    installGlobalBin(repoRoot);
   }
 
   // Sincronizar skills globales ÚNICAMENTE si ~/.agents/skills/ ya existía
@@ -1124,9 +1176,10 @@ async function main() {
     `${colors.bold}${colors.cyan}======================================================${colors.reset}`
   );
 
-  // 1. Sincronizar siempre policies globales en ~/.agents/policies/ (default obligatorio)
-  console.log(`\n${colors.cyan}[1/3] Sincronizando Policies Globales (~/.agents/policies/)...${colors.reset}`);
+  // 1. Sincronizar siempre policies globales y utilidades en ~/.agents/ (default obligatorio)
+  console.log(`\n${colors.cyan}[1/3] Sincronizando Policies y Utilidades Globales (~/.agents/)...${colors.reset}`);
   installGlobalPolicies(repoRoot);
+  installGlobalBin(repoRoot);
 
   // 2. Preguntar al usuario si desea copiar los skills en ~/.agents/skills/
   console.log(`\n${colors.cyan}[2/3] Verificando Agent Skills Globales (~/.agents/skills/)...${colors.reset}`);
@@ -1174,6 +1227,9 @@ async function main() {
   console.log(`\n${colors.bold}Resumen de componentes instalados:${colors.reset}`);
   console.log(
     `  • ${colors.cyan}Policies Globales de Ingeniería${colors.reset} en ${colors.bold}${path.join(GLOBAL_AGENTS_DIR, "policies")}${colors.reset}`
+  );
+  console.log(
+    `  • ${colors.cyan}Scripts y Utilidades Globales (bin)${colors.reset} en ${colors.bold}${path.join(GLOBAL_AGENTS_DIR, "bin")}${colors.reset}`
   );
   if (skillsCopied || fs.existsSync(path.join(GLOBAL_AGENTS_DIR, "skills"))) {
     const skillsPath = path.join(GLOBAL_AGENTS_DIR, "skills");

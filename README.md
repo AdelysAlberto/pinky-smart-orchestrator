@@ -377,6 +377,7 @@ pinky-smart-orchestrator/
 ├── scripts/
 │   └── installer.mjs           # Motor del CLI interactivo para selección de entornos
 ├── agents-globals/             # Recursos globales cross-harness (~/.agents/)
+│   ├── bin/                    # Scripts y herramientas de verificación (~/.agents/bin/)
 │   ├── policies/               # Invariantes y reglas de ingeniería (instalación por defecto)
 │   └── skills/                 # Catálogo de 57+ Agent Skills (instalación interactiva)
 ├── agents-pi/                  # Suite completa para Pi Coding Agent (~/.pi/agent/)

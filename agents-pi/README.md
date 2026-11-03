@@ -30,7 +30,7 @@ agents-pi/
 └── prompts/                   # Plantillas y comandos de prompt de Pi (~/.pi/agent/prompts/*.md)
 ```
 
-> **Nota:** Las policies y skills han sido unificadas en `agents-globals/` y se instalan en `~/.agents/` (`~/.agents/policies/` y `~/.agents/skills/`), donde Pi y cualquier otro harness los detectan de forma nativa e interoperable.
+> **Nota:** Las policies, utilidades y skills han sido unificadas en `agents-globals/` y se instalan en `~/.agents/` (`~/.agents/policies/`, `~/.agents/bin/` y `~/.agents/skills/`), donde Pi y cualquier otro harness los detectan de forma nativa e interoperable.
 
 ---
 

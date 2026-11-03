@@ -58,6 +58,12 @@ NEXT_MAJOR="v$((MAJOR + 1)).0.0"
 
 # Determine bump type from argument or prompt
 BUMP_TYPE="$1"
+AUTO_CONFIRM=false
+for arg in "$@"; do
+  if [ "$arg" = "-y" ] || [ "$arg" = "--yes" ]; then
+    AUTO_CONFIRM=true
+  fi
+done
 
 if [ -z "$BUMP_TYPE" ]; then
   clear
@@ -134,8 +140,12 @@ printf "  • Versión previa: ${DIM}%s${NC}\n" "$LATEST_TAG"
 printf "  • Nueva versión:  ${GREEN}${BOLD}%s${NC}\n" "$NEW_TAG"
 printf "  • Rama destino:   ${MAGENTA}%s${NC}\n\n" "$CURRENT_BRANCH"
 
-printf "${BOLD}¿Desea proceder con la creación y despliegue del release? [S/n]: ${NC}"
-read -r CONFIRM
+if [ "$AUTO_CONFIRM" = true ]; then
+  CONFIRM="y"
+else
+  printf "${BOLD}¿Desea proceder con la creación y despliegue del release? [S/n]: ${NC}"
+  read -r CONFIRM
+fi
 
 if [[ ! "$CONFIRM" =~ ^[SsYy]?$ ]] && [ -n "$CONFIRM" ]; then
   printf "${YELLOW}Operación cancelada.${NC}\n"
