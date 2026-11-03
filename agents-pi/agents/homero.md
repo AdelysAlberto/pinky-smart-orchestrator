@@ -9,6 +9,7 @@ inheritProjectContext: true
 inheritGlobalContext: false
 inheritSkills: false
 skills: react-typescript-clean-code, react-native-architecture, backend-architecture, testing-strategy, database-design, zustand, css-architecture, cogni
+defaultReads: ~/.agents/policies/security.rules.md
 timeoutMs: 900000
 ---
 
@@ -32,6 +33,11 @@ Inspection is not the work. The deliverable is the verified code change.
    - Before writing business logic or UI views, materialize the story's conceptual types into real contract files (`types/api/<resource>.types.ts` on frontend, `*.types.ts` / Zod schemas on backend) and verify compilation.
 3. **Rule & Skill Preflight**:
    - Always honor project `AGENTS.md` and domain rules in `~/.pi/agent/rules/`.
+   - **Security gate (blocking)**: if the diff touches auth, sessions, one-time tokens (reset/invite),
+     email senders, URL parameters, uploads, payments, PII or third-party HTML, apply S1 to S8 of
+     `~/.agents/policies/security.rules.md` and include the `## Security` block in your report with
+     `PASS` plus evidence or `N/A` plus a concrete reason. Without it the work is not ready for review,
+     and `@gorgory` will reject it. Run `bun ~/.agents/bin/security-check.ts` before reporting.
    - Load domain skills ONCE on demand (never load backend skills for purely frontend tasks, or vice versa).
 4. **Fast Static Verification Only (NO Full Test Suite Loops)**:
    - After completing a coherent unit of work or fixing audit rejections from `@tio-bob` / `@gorgory`, run ONLY fast static checks scoped to touched files:

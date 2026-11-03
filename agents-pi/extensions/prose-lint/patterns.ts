@@ -7,7 +7,7 @@
  * `robust` as decoration is the tell. Hits are reported, not blocked.
  */
 
-export type RuleId = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+export type RuleId = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
 export interface ProsePattern {
 	readonly rule: RuleId;
@@ -24,6 +24,7 @@ export const RULE_TITLES: Readonly<Record<RuleId, string>> = {
 	6: "formulaic heading",
 	7: "vague linkage or attribution",
 	8: "meta-commentary about the writing",
+	9: "state claim without adjacent evidence",
 };
 
 /** Structural checks that need a count rather than a match. */
@@ -147,3 +148,17 @@ export const PATTERNS: readonly ProsePattern[] = [
 export const THRESHOLDS: readonly ProseThreshold[] = [
 	{ rule: 8, label: "em dash", metric: "emDash", unit: "words", limit: 120 },
 ];
+
+/**
+ * Rule 9 — a sentence that asserts an outcome and shows no observation.
+ *
+ * The failure it exists for: reporting that a change was applied when the value that governs the
+ * behaviour lives outside the code (a database row, a deployed config). A claim is only worth reading
+ * when the same block carries the command and its output. Hits are reported, never blocked, and a block
+ * with a command line or an arrow is clean by design: that is the wanted phrasing.
+ */
+export const CLAIM_VERBS =
+	/\b(?:ya est[áa]|qued[óo]\s+(?:aplicad|desplegad|list|hech)|pas[óo] de\s|se aplic[óo]|aplicad[oa]\b|desplegad[oa]\b|implementad[oa]\b|verificad[oa]\b|funciona\b|est[áa] (?:aplicado|desplegado|hecho|listo)|has been (?:applied|deployed|verified)|it (?:works|is live))/i;
+
+/** What counts as the observation next to a claim: a command, its output, or a gate verdict. */
+export const EVIDENCE_MARKERS = /`|→|\$ |PASS\b|FAIL\b|NOT_RUN\b|salida:|output:/;

@@ -35,6 +35,26 @@ const cases: readonly { name: string; text: string; rule?: number; expectClean?:
 		rule: 8,
 	},
 	{
+		name: "rule 9 claim without evidence",
+		text: "El barrido de suscripciones ya está a diario en el worker.",
+		rule: 9,
+	},
+	{
+		name: "rule 9 claim with a command stays clean",
+		text: "El calendario efectivo: `SELECT key, pattern FROM cron_scheduler_configs` → 10 0 * * *.",
+		expectClean: true,
+	},
+	{
+		name: "rule 9 claim with an arrow output stays clean",
+		text: "Barrido aplicado → 10 0 * * * (leído de cron_scheduler_configs).",
+		expectClean: true,
+	},
+	{
+		name: "rule 9 does not read verbs inside code fences",
+		text: "Ejemplo:\n\n```\n-- aplicado por la migración 0024\n```\n",
+		expectClean: true,
+	},
+	{
 		name: "normal em-dash usage stays clean",
 		text: `${`The worker drains the queue on shutdown — a slow flush that cost us the first run. `.repeat(1)}${`Latency fell from 840 ms to 210 ms after the index change, and the queue depth stayed at zero for the rest of the hour, which the dashboard shows as a flat line. `.repeat(4)}`,
 		expectClean: true,

@@ -51,3 +51,17 @@ Applies to the main Pi session. Subagents must independently receive equivalent 
 - Name concrete paths, commands, versions, outcomes, and evidence where useful. Do not exaggerate certainty or imply validation that did not occur.
 - For code work, report scope changed, checks executed, remaining failures/risks, and next required action only when relevant. Follow role-specific output contracts if provided.
 - For agent delegation, communicate task scope, applicable policy paths, acceptance criteria, and verification expectations. A subagent's self-reported compliance is not proof; auditors must inspect evidence independently.
+
+## 7. Security Gate
+
+Applies when the change (not the task description) touches: authentication, sessions, one-time tokens or
+reset/invite links, email/SMS/push senders, URL or query parameters, uploads, payments, PII, or
+third-party HTML. Attack classes and obligations: `~/.agents/policies/security.rules.md` (S1 to S8).
+
+- The final message carries a `## Security` block with S1 to S8, each line `PASS` with executed evidence
+  or `N/A` with a concrete reason. An unjustified `N/A` is a failure, not a formality.
+- Run the mechanical checker before closing: `bun ~/.agents/bin/security-check.ts`. A `FAIL` is fixed or
+  suppressed on the same line with a stated reason.
+- Without that block the task is not complete: no `ready_for_review`, no `[x]`, no commit, no deploy.
+- Note for delegation: children do not receive this file (see "Global Agent Operating Contract" §4 in the
+  operator kernel); bind them through the project `AGENTS.md` and their own prompt.

@@ -21,7 +21,7 @@
  */
 
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
-import { PATTERNS, type ProseHit, type ProseThreshold, RULE_TITLES, type RuleId, THRESHOLDS } from "./patterns.ts";
+import { CLAIM_VERBS, EVIDENCE_MARKERS, PATTERNS, type ProseHit, type ProseThreshold, RULE_TITLES, type RuleId, THRESHOLDS } from "./patterns.ts";
 
 const LINTABLE_EXTENSIONS = [".md", ".mdx", ".markdown"];
 const DEFAULT_SKIP = "APPEND_SYSTEM.md";
@@ -35,7 +35,8 @@ export interface ProseReport {
 	readonly words: number;
 }
 
-const emptyCounts = (): Record<RuleId, number> => ({ 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0 });
+const emptyCounts = (): Record<RuleId, number> =>
+	Object.fromEntries(Object.keys(RULE_TITLES).map((rule) => [rule, 0])) as Record<RuleId, number>;
 
 const clip = (text: string): string =>
 	text.length <= MAX_EXCERPT ? text : `${text.slice(0, MAX_EXCERPT - 1)}…`;
@@ -71,6 +72,41 @@ const collectThresholdHits = (text: string, lines: number, words: number, counts
 	return hits;
 };
 
+/**
+ * Rule 9: a block that asserts an outcome and shows no observation.
+ *
+ * Blocks are separated by blank lines, so a claim and the command that proves it live in the same block
+ * when they belong together. Code is masked for the verb and left intact for the evidence: a fenced
+ * example that quotes "applied" must not fire, and a command line is exactly the evidence wanted.
+ */
+const collectClaimHits = (masked: string, raw: string, counts: Record<RuleId, number>): ProseHit[] => {
+	const hits: ProseHit[] = [];
+	const maskedLines = masked.split("\n");
+	const rawLines = raw.split("\n");
+	let start = 0;
+	while (start < maskedLines.length) {
+		if ((maskedLines[start] ?? "").trim() === "") {
+			start += 1;
+			continue;
+		}
+		let end = start;
+		while (end + 1 < maskedLines.length && (maskedLines[end + 1] ?? "").trim() !== "") end += 1;
+		const claim = maskedLines.slice(start, end + 1).join("\n");
+		const evidence = rawLines.slice(start, end + 1).join("\n");
+		if (CLAIM_VERBS.test(claim) && !EVIDENCE_MARKERS.test(evidence)) {
+			counts[9] += 1;
+			hits.push({
+				rule: 9,
+				label: "outcome claimed with no command or output next to it",
+				line: start + 1,
+				excerpt: clip((maskedLines[start] ?? "").trim()),
+			});
+		}
+		start = end + 1;
+	}
+	return hits;
+};
+
 export const lintProse = (raw: string): ProseReport => {
 	const text = maskCode(raw);
 	const lines = text.split("\n");
@@ -92,6 +128,9 @@ export const lintProse = (raw: string): ProseReport => {
 		}
 	}
 	for (const hit of collectThresholdHits(text, lines.length, words, counts)) {
+		hits.push(hit);
+	}
+	for (const hit of collectClaimHits(text, raw, counts)) {
 		hits.push(hit);
 	}
 	return { hits, ruleCounts: counts, words };
@@ -168,7 +207,7 @@ export default function (pi: ExtensionAPI) {
 			const state = disabled ? "disabled by PI_PROSE_LINT_DISABLE" : "enabled";
 			const lines = [
 				`prose-lint ${state}`,
-				`${PATTERNS.length} patterns, ${THRESHOLDS.length} density checks, rules 1-8`,
+				`${PATTERNS.length} patterns, ${THRESHOLDS.length} density checks, claim rule 9, rules 1-9`,
 				`skipped paths: ${skipTokens().join(", ")}`,
 			];
 			ctx.ui.notify(lines.join(" · "), "info");
